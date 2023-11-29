@@ -69,6 +69,23 @@ Example:
     tdo
 ```
 
+### 📁 Dir Structure
+
+```
+├── log
+│   └── 2023
+│       └── 11
+│           ├── 2023-11-28.md
+│           └── 2023-11-29.md
+└── notes
+    ├── tech
+    │   └── quit-vim.md
+    │   └── arch-btw.md
+    └── templates
+        ├── note.md
+        └── todo.md
+```
+
 ## 🏗️ What's Next
 
 Planning to add `<feature/module>`.
