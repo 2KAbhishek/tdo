@@ -34,21 +34,23 @@ check_command() {
 }
 
 main() {
-    required=$1
-    optional=${2:-$DEFAULT_VALUE}
+    check_command "rg"
+    check_command "fzf"
+    check_command "bat"
 
-    check_command "$optional"
-
-    if [[ "$1" == "-h" || "$1" == "--help" ]]; then
+    case "$1" in
+    -h | --help)
         display_help
         exit 0
-    fi
-
-    if [ $# -lt 1 ]; then
+        ;;
+    "")
         todos
-    fi
-
-    echo "Required: $required, Optional: $optional"
+        exit 0
+        ;;
+    *)
+        search "$1"
+        ;;
+    esac
 }
 
 main "$@"
