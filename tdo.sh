@@ -3,7 +3,7 @@
 DEFAULT_VALUE="sh"
 
 display_help() {
-    cat << EOF
+    cat <<EOF
 tdo: Todos and Notes, Blazingly Fast! 📃🚀
 
 Usage: tdo <required> [optional]
@@ -14,8 +14,15 @@ Arguments:
 EOF
 }
 
+todos() {
+    cd "$NOTES_DIR" || return
+    rg -l --sort created --glob '!templates/*' '\[ \]' |
+        fzf --bind "enter:execute($EDITOR {})" --preview 'grep -e "\[ \]" {}'
+    cd - >/dev/null || return
+}
+
 check_command() {
-    if ! command -v "$1" &> /dev/null; then
+    if ! command -v "$1" &>/dev/null; then
         echo "Error: The $1 command is not available. Make sure it is installed."
         exit 1
     fi
@@ -33,14 +40,10 @@ main() {
     fi
 
     if [ $# -lt 1 ]; then
-        echo "Error: required is required."
-        echo
-        display_help
-        exit 1
+        todos
     fi
 
     echo "Required: $required, Optional: $optional"
 }
 
 main "$@"
-
