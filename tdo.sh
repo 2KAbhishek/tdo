@@ -4,11 +4,22 @@ display_help() {
     cat <<EOF
 tdo: Todos and Notes, Blazingly Fast! 📃🚀
 
-Usage: tdo <required> [optional]
+Usage: tdo [options] [arguments]
 
-Arguments:
-  required:        The required value
-  optional:        The optional value
+Options:
+-f | --find | f | find:    searches for argument in notes
+-t | --todo | t | todo:    shows all pending todos
+-h | --help | h | help:    shows this help message
+
+Example:
+# opens today's todo file
+tdo
+# opens the note for vim in tech dir
+tdo tech/vim
+# shows all pending todos
+tdo t
+# searches for neovim in all notes
+tdo s neovim
 EOF
 }
 
@@ -20,6 +31,11 @@ check_command() {
 }
 
 search() {
+    if [ -z "$1" ]; then
+        echo "Error: Please provide a search term."
+        exit 1
+    fi
+
     cd "$NOTES_DIR" || return
     rg -l --sort created "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
@@ -27,14 +43,14 @@ search() {
     cd - >/dev/null || return
 }
 
-todos() {
+pending_todos() {
     cd "$NOTES_DIR" || return
     rg -l --sort created --glob '!templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
     cd - >/dev/null || return
 }
 
-todo() {
+new_todo() {
     cd "$NOTES_DIR" || return
     year=$(date +%Y)
     month=$(date +%m)
@@ -44,13 +60,12 @@ todo() {
     if [ ! -f "$todo_file" ]; then
         cp notes/templates/todo.md "$todo_file"
     fi
-
     mkdir -p "$(dirname "$todo_file")"
     $EDITOR "$todo_file"
     cd - >/dev/null || return
 }
 
-note() {
+new_note() {
     cd "$NOTES_DIR" || return
     notes_file="notes/$1.md"
 
@@ -72,20 +87,20 @@ main() {
         display_help
         exit 0
         ;;
-    -s | --search | s | search)
+    -f | --find | f | find)
         search "$2"
         exit 0
         ;;
-    -t | --todos | t | todos)
-        todos
+    -t | --todo | t | todo)
+        pending_todos
         exit 0
         ;;
     "")
-        todo
+        new_todo
         exit 0
         ;;
     *)
-        note "$1"
+        new_note "$1"
         ;;
     esac
 }
