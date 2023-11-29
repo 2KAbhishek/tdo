@@ -4,9 +4,9 @@ DEFAULT_VALUE="sh"
 
 display_help() {
     cat << EOF
-shelly: Publish CLI Tools 🐚✨
+tdo: Todos and Notes, Blazingly Fast! 📃🚀
 
-Usage: shelly <required> [optional]
+Usage: tdo <required> [optional]
 
 Arguments:
   required:        The required value

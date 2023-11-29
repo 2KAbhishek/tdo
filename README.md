@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/tdo/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/tdo?style=flat&color=e06c75&label="> </a>
 
-<h3>Publish CLI Tools 🐚✨</h3>
+<h3>Todos and Notes, Blazingly Fast! 📃🚀</h3>
 
 <figure>
   <img src="images/screenshot.png" alt="tdo in action">
