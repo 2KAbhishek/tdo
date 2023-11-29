@@ -22,7 +22,8 @@ todos() {
 search() {
     cd "$NOTES_DIR" || return
     rg -l --sort created "$1" |
-        fzf --bind "enter:execute($EDITOR {})" --preview "bat --color=always --style=grid --line-range :500 {}"
+        fzf --bind "enter:execute($EDITOR {})" \
+            --preview "bat --color=always --style=numbers --line-range :500 {}"
     cd - >/dev/null || return
 }
 
@@ -31,6 +32,18 @@ check_command() {
         echo "Error: The $1 command is not available. Make sure it is installed."
         exit 1
     fi
+}
+
+note() {
+    cd "$NOTES_DIR" || return
+    notes_file=notes/"$1".md
+
+    if [ ! -f "$notes_file" ]; then
+        cp notes/templates/note.md "$notes_file"
+    fi
+    mkdir -p "$(dirname "$notes_file")"
+    $EDITOR "$notes_file"
+    cd - >/dev/null || return
 }
 
 main() {
@@ -43,12 +56,20 @@ main() {
         display_help
         exit 0
         ;;
-    "")
+    -t | --todos)
         todos
         exit 0
         ;;
+    -s | --search)
+        search "$2"
+        exit 0
+        ;;
+    "")
+        todo
+        exit 0
+        ;;
     *)
-        search "$1"
+        note "$1"
         ;;
     esac
 }
