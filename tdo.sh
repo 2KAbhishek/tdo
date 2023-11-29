@@ -1,7 +1,5 @@
 #!/bin/bash
 
-DEFAULT_VALUE="sh"
-
 display_help() {
     cat <<EOF
 tdo: Todos and Notes, Blazingly Fast! 📃🚀
@@ -17,7 +15,14 @@ EOF
 todos() {
     cd "$NOTES_DIR" || return
     rg -l --sort created --glob '!templates/*' '\[ \]' |
-        fzf --bind "enter:execute($EDITOR {})" --preview 'grep -e "\[ \]" {}'
+        fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
+    cd - >/dev/null || return
+}
+
+search() {
+    cd "$NOTES_DIR" || return
+    rg -l --sort created "$1" |
+        fzf --bind "enter:execute($EDITOR {})" --preview "bat --color=always --style=grid --line-range :500 {}"
     cd - >/dev/null || return
 }
 
