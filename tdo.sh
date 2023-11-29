@@ -58,7 +58,8 @@ new_todo() {
     todo_file="log/$year/$month/$today.md"
 
     if [ ! -f "$todo_file" ]; then
-        cp notes/templates/todo.md "$todo_file"
+        template="notes/templates/todo.md"
+        [ -f "$template" ] && cp "$template" "$todo_file"
     fi
     mkdir -p "$(dirname "$todo_file")"
     $EDITOR "$todo_file"
@@ -70,7 +71,8 @@ new_note() {
     notes_file="notes/$1.md"
 
     if [ ! -f "$notes_file" ]; then
-        cp notes/templates/note.md "$notes_file"
+        template="notes/templates/note.md"
+        [ -f "$template" ] && cp "$template" "$notes_file"
     fi
     mkdir -p "$(dirname "$notes_file")"
     $EDITOR "$notes_file"
