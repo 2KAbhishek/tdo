@@ -19,7 +19,9 @@ tdo tech/vim
 # shows all pending todos
 tdo t
 # searches for neovim in all notes
-tdo s neovim
+tdo f neovim
+# review all notes
+tdo f
 EOF
 }
 
@@ -31,13 +33,8 @@ check_command() {
 }
 
 search() {
-    if [ -z "$1" ]; then
-        echo "Error: Please provide a search term."
-        exit 1
-    fi
-
     cd "$NOTES_DIR" || return
-    rg -l --sort created "$1" |
+    rg -l --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
             --preview "bat --color=always --style=numbers --line-range :500 {}"
     cd - >/dev/null || return
@@ -45,7 +42,7 @@ search() {
 
 pending_todos() {
     cd "$NOTES_DIR" || return
-    rg -l --sort created --glob '!templates/*' '\[ \]' |
+    rg -l --glob '!*/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
     cd - >/dev/null || return
 }
