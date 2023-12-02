@@ -23,7 +23,7 @@
 <h3>Todos and Notes, Blazingly Fast! 📃🚀</h3>
 
 <figure>
-  <img src="images/screenshot.png" alt="tdo in action">
+  <img src="images/screenshot.jpg" alt="tdo in action">
   <br/>
   <figcaption>tdo in action</figcaption>
 </figure>
