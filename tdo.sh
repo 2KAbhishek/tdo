@@ -36,14 +36,16 @@ search() {
     cd "$NOTES_DIR" || return
     rg -li --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
-            --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
+            --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}" \
+            --prompt=' ' --pointer=' '
     cd - >/dev/null || return
 }
 
 pending_todos() {
     cd "$NOTES_DIR" || return
     rg -l --glob '!*/templates/*' '\[ \]' |
-        fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
+        fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}' \
+            --prompt=' ' --pointer=' '
     cd - >/dev/null || return
 }
 

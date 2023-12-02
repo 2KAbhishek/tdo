@@ -84,6 +84,8 @@ tdo f neovim
 tdo f
 ```
 
+The look and feel of the fzf window can be configured using env variables, check fzf docs for more.
+
 ### 📁 Dir Structure
 
 `tdo` expects a certain directory structure to function.
