@@ -34,9 +34,9 @@ check_command() {
 
 search() {
     cd "$NOTES_DIR" || return
-    rg -l --sort path "$1" |
+    rg -li --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
-            --preview "bat --color=always --style=numbers --line-range :500 {}"
+            --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
     cd - >/dev/null || return
 }
 
@@ -79,7 +79,6 @@ new_note() {
 main() {
     check_command "rg"
     check_command "fzf"
-    check_command "bat"
 
     case "$1" in
     -h | --help | h | help)
