@@ -54,11 +54,11 @@ new_todo() {
     today=$(date +%Y-%m-%d)
     todo_file="log/$year/$month/$today.md"
 
+    mkdir -p "$(dirname "$todo_file")"
     if [ ! -f "$todo_file" ]; then
         template="notes/templates/todo.md"
         [ -f "$template" ] && cp "$template" "$todo_file"
     fi
-    mkdir -p "$(dirname "$todo_file")"
     $EDITOR "$todo_file"
     cd - >/dev/null || return
 }
@@ -67,11 +67,11 @@ new_note() {
     cd "$NOTES_DIR" || return
     notes_file="notes/$1.md"
 
+    mkdir -p "$(dirname "$notes_file")"
     if [ ! -f "$notes_file" ]; then
         template="notes/templates/note.md"
         [ -f "$template" ] && cp "$template" "$notes_file"
     fi
-    mkdir -p "$(dirname "$notes_file")"
     $EDITOR "$notes_file"
     cd - >/dev/null || return
 }
