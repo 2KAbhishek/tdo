@@ -30,20 +30,23 @@
 
 </div>
 
-tdo is a `<utility/tool>` that allows `<target_audience>` to `<action>`.
+tdo is a opinionated, command line based note-taking system.
 
 ## ✨ Features
 
-- Comes with a ready to go shell template
-- Quick documentation with README template
-- Works with [mkrepo](https://github.com/2kabhishek/mkrepo)
+- Can help you manage a daily log, todos and notes
+- Has interactive fuzzy searching capabilities powered by fzf
+- Blazingly fast, thanks to ripgrep
 
 ## ⚡ Setup
 
 ### ⚙️ Requirements
 
-- foo >= bar
-- bazz
+- ripgrep, fzf
+- bat (optional, for syntax highlighting in search)
+
+- `NOTES_DIR` env variable pointing to your notes directory
+- `EDITOR` env variable set to your choice of editor
 
 ### 💻 Installation
 
@@ -52,24 +55,43 @@ git clone https://github.com/2kabhishek/tdo
 cd tdo
 # Link mkrepo to a directory that's in PATH (~/.local/bin here)
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
+# Create a notes dir if not already present
+mkdir -p ~/Projects/notes
+# Add the NOTES_DIR env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
+echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
 ```
 
 ## 🚀 Usage
 
 ```bash
-USAGE:
+Usage: tdo [options] [arguments]
 
-tdo <REQUIRED> [OPTIONAL]
-
-Arguments:
-    REQUIRED: Required Argument
-    OPTIONAL: Optional Argument
+Options:
+-f | --find | f | find:    searches for argument in notes
+-t | --todo | t | todo:    shows all pending todos
+-h | --help | h | help:    shows this help message
 
 Example:
-    tdo
+# opens today's todo file
+tdo
+# opens the note for vim in tech dir
+tdo tech/vim
+# shows all pending todos
+tdo t
+# searches for neovim in all notes
+tdo f neovim
+# review all notes
+tdo f
 ```
 
 ### 📁 Dir Structure
+
+`tdo` expects a certain directory structure to function.
+
+- Todos are kept in `log` dir, these can also be used for short term notes
+- Todos use the `notes/templates/todo.md` file as template
+- Long term notes are to be categorized under the `notes` dir
+- Notes use the `notes/templates/note.md` file as template
 
 ```
 ├── log
@@ -88,24 +110,15 @@ Example:
 
 ## 🏗️ What's Next
 
-Planning to add `<feature/module>`.
-
-### ✅ To-Do
-
-- [x] Setup repo
-- [ ] Think real hard
-- [ ] Start typing
+You tell me!
 
 ## 🧑‍💻 Behind The Code
 
 ### 🌈 Inspiration
 
-tdo was inspired by `<reason/idea>`.
+After trying out every note management system under the sun I had decided on using plain markdown notes [powered by nvim2k](https://youtu.be/FP7sQhc8kek).
 
-### 💡 Challenges/Learnings
-
-- The main challenges were `<issue/difficulty>`
-- I learned about `<learning/accomplishment>`
+tdo is a spiritual successor and complimentary tool to that, taking the same principles and making it more accessible.
 
 ### 🧰 Tooling
 
@@ -116,8 +129,7 @@ tdo was inspired by `<reason/idea>`.
 
 ### 🔍 More Info
 
-- [bare-minimum](https://github.com/2kabhishek/bare-minimum) — General purpose template
-- [tiny-web](https://github.com/2kabhishek/tiny-web) — Web app template
+- [cmtr](https://github.com/2kabhishek/cmtr) — Easily commit and backup your notes
 
 <hr>
 
@@ -133,4 +145,3 @@ tdo was inspired by `<reason/idea>`.
 | <a href="https://2kabhishek.github.io/projects" target="_blank">Other Projects </a>
 
 </div>
-
