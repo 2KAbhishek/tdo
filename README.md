@@ -53,7 +53,7 @@ tdo is a opinionated, command line based note-taking system.
 ```bash
 git clone https://github.com/2kabhishek/tdo
 cd tdo
-# Link mkrepo to a directory that's in PATH (~/.local/bin here)
+# Link tdo to a directory that's in PATH (~/.local/bin here)
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 # Create a notes dir if not already present
 mkdir -p ~/Projects/notes
