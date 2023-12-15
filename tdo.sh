@@ -32,6 +32,16 @@ check_command() {
     fi
 }
 
+commit() {
+    if [ -n "$(git status --porcelain)" ]; then
+        timestamp=$(date +'%a, %d %b %y, %I:%m %p')
+        git pull --rebase --autostash >/dev/null 2>&1 &
+        git add .
+        git commit -m "$timestamp" >/dev/null 2>&1 &
+        git push >/dev/null 2>&1 &
+    fi
+}
+
 search() {
     cd "$NOTES_DIR" || return
     rg -li --sort path "$1" |
