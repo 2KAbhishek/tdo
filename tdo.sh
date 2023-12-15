@@ -73,6 +73,23 @@ new_note() {
         [ -f "$template" ] && cp "$template" "$notes_file"
     fi
     $EDITOR "$notes_file"
+new_entry() {
+    cd "$ENTRY_DIR" || return
+    year=$(date +'%Y')
+    month=$(date +'%m')
+    file_name=$(date +'%Y-%m-%d.md')
+    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
+    entry_file="$year/$month/$file_name"
+
+    if [ ! -f "$entry_file" ]; then
+        mkdir -p "$year/$month"
+        cp template.md "$entry_file"
+    fi
+
+    echo -e "\n## $timestamp\n" >>"$entry_file"
+    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
+
+    commit
     cd - >/dev/null || return
 }
 
