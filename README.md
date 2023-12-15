@@ -117,7 +117,7 @@ The look and feel of the fzf window can be configured using env variables, check
         └── todo.md
 ```
 
-#### ✍️J ournal
+#### ✍️ Journal
 
 For journal entries we have a simpler directory structure.
 
