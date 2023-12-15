@@ -34,9 +34,10 @@ tdo is a opinionated, command line based note-taking system.
 
 ## ✨ Features
 
-- Can help you manage a daily log, todos and notes
+- Can help you manage a daily log, todos, journal and notes
 - Has interactive fuzzy searching capabilities powered by fzf
 - Blazingly fast, thanks to ripgrep
+- Integrates with git to commit and backup your notes automatically
 
 ## ⚡ Setup
 
@@ -46,6 +47,7 @@ tdo is a opinionated, command line based note-taking system.
 - bat (optional, for syntax highlighting in search)
 
 - `NOTES_DIR` env variable pointing to your notes directory
+- `ENTRY_DIR` env variable pointing to your journal directory (optional, if you want to have a separate journal)
 - `EDITOR` env variable set to your choice of editor
 
 ### 💻 Installation
@@ -67,9 +69,10 @@ echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
 Usage: tdo [options] [arguments]
 
 Options:
--f | --find | f | find:    searches for argument in notes
--t | --todo | t | todo:    shows all pending todos
--h | --help | h | help:    shows this help message
+-e | --entry | e | entry:    searches for argument in notes
+-f | --find  | f | find:     searches for argument in notes
+-t | --todo  | t | todo:     shows all pending todos
+-h | --help  | h | help:     shows this help message
 
 Example:
 # opens today's todo file
@@ -78,6 +81,8 @@ tdo
 tdo tech/vim
 # shows all pending todos
 tdo t
+# make a new entry
+tdo e
 # searches for neovim in all notes
 tdo f neovim
 # review all notes
@@ -89,6 +94,8 @@ The look and feel of the fzf window can be configured using env variables, check
 ### 📁 Dir Structure
 
 `tdo` expects a certain directory structure to function.
+
+#### Notes
 
 - Todos are kept in `log` dir, these can also be used for short term notes
 - Todos use the `notes/templates/todo.md` file as template
@@ -108,6 +115,24 @@ The look and feel of the fzf window can be configured using env variables, check
     └── templates
         ├── note.md
         └── todo.md
+```
+
+#### Journal
+
+For journal entries we have a simpler directory structure.
+
+- Entries are placed in year/month/day md files
+- Template path is `$ENTYR_DIR/template.md`
+
+```
+├── 2023
+│   ├── 10
+│   ├── 11
+│   └── 12
+│       ├── 2023-12-12.md
+│       ├── 2023-12-13.md
+│       └── 2023-12-15.md
+└── template.md
 ```
 
 ## 🏗️ What's Next

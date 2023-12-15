@@ -7,9 +7,10 @@ tdo: Todos and Notes, Blazingly Fast! 📃🚀
 Usage: tdo [options] [arguments]
 
 Options:
--f | --find | f | find:    searches for argument in notes
--t | --todo | t | todo:    shows all pending todos
--h | --help | h | help:    shows this help message
+-e | --entry | e | entry:    searches for argument in notes
+-f | --find  | f | find:     searches for argument in notes
+-t | --todo  | t | todo:     shows all pending todos
+-h | --help  | h | help:     shows this help message
 
 Example:
 # opens today's todo file
@@ -18,6 +19,8 @@ tdo
 tdo tech/vim
 # shows all pending todos
 tdo t
+# make a new entry
+tdo e
 # searches for neovim in all notes
 tdo f neovim
 # review all notes
@@ -55,6 +58,7 @@ search() {
 
 pending_todos() {
     cd "$NOTES_DIR" || return
+
     rg -l --glob '!*/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
 
