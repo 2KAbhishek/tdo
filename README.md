@@ -46,8 +46,8 @@ tdo is a opinionated, command line based note-taking system.
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
 
-- `NOTES_DIR` env variable pointing to your notes directory
-- `ENTRY_DIR` env variable pointing to your journal directory (optional, if you want to have a separate journal)
+- `TDO_NOTES` env variable pointing to your notes directory
+- `TDO_JOURNAL` env variable pointing to your journal directory (optional, if you want to have a separate journal)
 - `EDITOR` env variable set to your choice of editor
 
 ### 💻 Installation
@@ -59,8 +59,8 @@ cd tdo
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 # Create a notes dir if not already present
 mkdir -p ~/Projects/notes
-# Add the NOTES_DIR env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
-echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
+# Add the TDO_NOTES env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
+echo "TDO_NOTES=~/Projects/notes" >> ~/.profile
 ```
 
 ## 🚀 Usage
@@ -95,7 +95,7 @@ The look and feel of the fzf window can be configured using env variables, check
 
 `tdo` expects a certain directory structure to function.
 
-#### Notes
+#### 📓 Notes
 
 - Todos are kept in `log` dir, these can also be used for short term notes
 - Todos use the `notes/templates/todo.md` file as template
@@ -117,7 +117,7 @@ The look and feel of the fzf window can be configured using env variables, check
         └── todo.md
 ```
 
-#### Journal
+#### ✍️J ournal
 
 For journal entries we have a simpler directory structure.
 
@@ -134,6 +134,10 @@ For journal entries we have a simpler directory structure.
 │       └── 2023-12-15.md
 └── template.md
 ```
+
+### 💾 Git Integration
+
+If either of your `$TDO_NOTES` or `$TDO_JOURNAL` is under git, tdo will automatically commit and push every change with the timestamp like `Fri, 15 Dec 23, 10:53 AM` as commit message.
 
 ## 🏗️ What's Next
 
