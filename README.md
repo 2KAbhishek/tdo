@@ -46,8 +46,8 @@ tdo is a opinionated, command line based note-taking system.
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
 
-- `TDO_NOTES` env variable pointing to your notes directory
-- `TDO_JOURNAL` env variable pointing to your journal directory (optional, if you want to have a separate journal)
+- `NOTES_DIR` env variable pointing to your notes directory
+- `JOURNAL_DIR` env variable pointing to your journal directory (optional, if you want to have a separate journal)
 - `EDITOR` env variable set to your choice of editor
 
 ### 💻 Installation
@@ -59,8 +59,8 @@ cd tdo
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 # Create a notes dir if not already present
 mkdir -p ~/Projects/notes
-# Add the TDO_NOTES env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
-echo "TDO_NOTES=~/Projects/notes" >> ~/.profile
+# Add the NOTES_DIR env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
+echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
 ```
 
 ## 🚀 Usage
@@ -137,7 +137,7 @@ For journal entries we have a simpler directory structure.
 
 ### 💾 Git Integration
 
-If either of your `$TDO_NOTES` or `$TDO_JOURNAL` is under git, tdo will automatically commit and push every change with the timestamp like `Fri, 15 Dec 23, 10:53 AM` as commit message.
+If either of your `$NOTES_DIR` or `$JOURNAL_DIR` is under git, tdo will automatically commit and push every change with the timestamp like `Fri, 15 Dec 23, 10:53 AM` as commit message.
 
 ## 🏗️ What's Next
 

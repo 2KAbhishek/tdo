@@ -48,7 +48,7 @@ commit() {
 }
 
 search() {
-    cd "$TDO_NOTES" || return
+    cd "$NOTES_DIR" || return
 
     rg -li --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
@@ -59,7 +59,7 @@ search() {
 }
 
 pending_todos() {
-    cd "$TDO_NOTES" || return
+    cd "$NOTES_DIR" || return
 
     rg -l --glob '!*/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
@@ -69,7 +69,7 @@ pending_todos() {
 }
 
 new_todo() {
-    cd "$TDO_NOTES" || return
+    cd "$NOTES_DIR" || return
     year=$(date +'%Y')
     month=$(date +'%m')
     file_name=$(date +'%Y-%m-%d.md')
@@ -87,7 +87,7 @@ new_todo() {
 }
 
 new_note() {
-    cd "$TDO_NOTES" || return
+    cd "$NOTES_DIR" || return
     notes_file="notes/$1.md"
 
     mkdir -p "$(dirname "$notes_file")"
@@ -102,7 +102,7 @@ new_note() {
 }
 
 new_entry() {
-    cd "$TDO_JOURNAL" || return
+    cd "$JOURNAL_DIR" || return
     year=$(date +'%Y')
     month=$(date +'%m')
     file_name=$(date +'%Y-%m-%d.md')
