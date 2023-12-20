@@ -38,7 +38,7 @@ check_command() {
 commit() {
     if [ -d ".git" ] || git rev-parse --git-dir >/dev/null 2>&1; then
         if [ -n "$(git status --porcelain)" ]; then
-            timestamp=$(date +'%a, %d %b %y, %I:%M %p')
+            timestamp=$(date +'%d %b %H:%M')
             git pull --rebase --autostash >/dev/null 2>&1 &
             git add .
             git commit -m "$timestamp" >/dev/null 2>&1 &
