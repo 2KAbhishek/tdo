@@ -68,12 +68,16 @@ pending_todos() {
     cd - >/dev/null || return
 }
 
-generate_file_name() {
-    local year month file_name
+generate_file_path() {
+    local offset="$1"
+    local year month day file_name
 
-    year=$(date +'%Y')
-    month=$(date +'%m')
-    file_name=$(date +'%Y-%m-%d.md')
+    offset="${offset:-0}"
+
+    year=$(date -d "$offset days" +'%Y')
+    month=$(date -d "$offset days" +'%m')
+    day=$(date -d "$offset days" +'%d')
+    file_name="${year}-${month}-${day}.md"
 
     echo "$year/$month/$file_name"
 }
@@ -81,7 +85,7 @@ generate_file_name() {
 new_todo() {
     local todo_file template
 
-    todo_file="log/$(generate_file_name)"
+    todo_file="log/$(generate_file_path "$1")"
     template="notes/templates/todo.md"
 
     cd "$NOTES_DIR" || return
@@ -114,7 +118,7 @@ new_entry() {
     local entry_file timestamp
 
     cd "$JOURNAL_DIR" || return
-    entry_file="$(generate_file_name)"
+    entry_file="$(generate_file_path "$1")"
     timestamp=$(date +'%a, %d %b %y, %I:%m %p')
 
     mkdir -p "$(dirname "$entry_file")"
@@ -135,7 +139,7 @@ main() {
 
     case "$1" in
     -e | --entry | e | entry)
-        new_entry
+        new_entry "$2"
         ;;
     -f | --find | f | find)
         search "$2"
@@ -146,8 +150,8 @@ main() {
     -t | --todo | t | todo)
         pending_todos
         ;;
-    "")
-        new_todo
+    "" | [0-9-]*)
+        new_todo "$1"
         ;;
     *)
         new_note "$1"
