@@ -94,21 +94,6 @@ new_todo() {
     cd - >/dev/null || return
 }
 
-new_note() {
-    cd "$NOTES_DIR" || return
-    notes_file="notes/$1.md"
-
-    mkdir -p "$(dirname "$notes_file")"
-    if [ ! -f "$notes_file" ]; then
-        template="notes/templates/note.md"
-        [ -f "$template" ] && cp "$template" "$notes_file"
-    fi
-    $EDITOR "$notes_file"
-
-    commit
-    cd - >/dev/null || return
-}
-
 new_entry() {
     cd "$JOURNAL_DIR" || return
     entry_file="$(generate_file_path "$1")"
@@ -121,6 +106,21 @@ new_entry() {
 
     echo -e "\n## $timestamp\n" >>"$entry_file"
     ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
+
+    commit
+    cd - >/dev/null || return
+}
+
+new_note() {
+    cd "$NOTES_DIR" || return
+    notes_file="notes/$1.md"
+
+    mkdir -p "$(dirname "$notes_file")"
+    if [ ! -f "$notes_file" ]; then
+        template="notes/templates/note.md"
+        [ -f "$template" ] && cp "$template" "$notes_file"
+    fi
+    $EDITOR "$notes_file"
 
     commit
     cd - >/dev/null || return
