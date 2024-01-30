@@ -35,6 +35,7 @@ tdo is a opinionated, command line based note-taking system.
 ## ✨ Features
 
 - Can help you manage a daily log, todos, journal and notes
+- Quickly review pending todos, past journal entries, future todos and more
 - Has interactive fuzzy searching capabilities powered by fzf
 - Blazingly fast, thanks to ripgrep
 - Integrates with git to commit and backup your notes automatically
@@ -75,14 +76,18 @@ Options:
 -h | --help  | h | help:     shows this help message
 
 Example:
-# opens today's todo file
+# opens today's todo
 tdo
-# opens the note for vim in tech dir
-tdo tech/vim
+# opens tommorow's todo
+tdo 1
 # shows all pending todos
 tdo t
-# make a new entry
+# open today's journal entry
 tdo e
+# opens day before yesterday's journal entry
+tdo e -2
+# opens the note for vim.md in tech dir
+tdo tech/vim
 # searches for neovim in all notes
 tdo f neovim
 # review all notes

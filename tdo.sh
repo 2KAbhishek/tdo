@@ -13,14 +13,18 @@ Options:
 -h | --help  | h | help:     shows this help message
 
 Example:
-# opens today's todo file
+# opens today's todo
 tdo
-# opens the note for vim in tech dir
-tdo tech/vim
+# opens tommorow's todo
+tdo 1
 # shows all pending todos
 tdo t
-# make a new entry
+# open today's journal entry
 tdo e
+# opens day before yesterday's journal entry
+tdo e -2
+# opens the note for vim.md in tech dir
+tdo tech/vim
 # searches for neovim in all notes
 tdo f neovim
 # review all notes
@@ -68,19 +72,44 @@ pending_todos() {
     cd - >/dev/null || return
 }
 
-new_todo() {
-    cd "$NOTES_DIR" || return
-    year=$(date +'%Y')
-    month=$(date +'%m')
-    file_name=$(date +'%Y-%m-%d.md')
-    todo_file="log/$year/$month/$file_name"
+generate_file_path() {
+    offset="${1:-0}"
 
+    year=$(date -d "$offset days" +'%Y')
+    month=$(date -d "$offset days" +'%m')
+    day=$(date -d "$offset days" +'%d')
+    file_name="${year}-${month}-${day}.md"
+
+    echo "$year/$month/$file_name"
+}
+
+new_todo() {
+    todo_file="log/$(generate_file_path "$1")"
+    template="notes/templates/todo.md"
+
+    cd "$NOTES_DIR" || return
     mkdir -p "$(dirname "$todo_file")"
     if [ ! -f "$todo_file" ]; then
-        template="notes/templates/todo.md"
         [ -f "$template" ] && cp "$template" "$todo_file"
     fi
     $EDITOR "$todo_file"
+
+    commit
+    cd - >/dev/null || return
+}
+
+new_entry() {
+    cd "$JOURNAL_DIR" || return
+    entry_file="$(generate_file_path "$1")"
+    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
+
+    mkdir -p "$(dirname "$entry_file")"
+    if [ ! -f "$entry_file" ]; then
+        cp template.md "$entry_file"
+    fi
+
+    echo -e "\n## $timestamp\n" >>"$entry_file"
+    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
 
     commit
     cd - >/dev/null || return
@@ -101,33 +130,13 @@ new_note() {
     cd - >/dev/null || return
 }
 
-new_entry() {
-    cd "$JOURNAL_DIR" || return
-    year=$(date +'%Y')
-    month=$(date +'%m')
-    file_name=$(date +'%Y-%m-%d.md')
-    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
-    entry_file="$year/$month/$file_name"
-
-    if [ ! -f "$entry_file" ]; then
-        mkdir -p "$year/$month"
-        cp template.md "$entry_file"
-    fi
-
-    echo -e "\n## $timestamp\n" >>"$entry_file"
-    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
-
-    commit
-    cd - >/dev/null || return
-}
-
 main() {
     check_command "rg"
     check_command "fzf"
 
     case "$1" in
     -e | --entry | e | entry)
-        new_entry
+        new_entry "$2"
         ;;
     -f | --find | f | find)
         search "$2"
@@ -138,8 +147,8 @@ main() {
     -t | --todo | t | todo)
         pending_todos
         ;;
-    "")
-        new_todo
+    "" | [0-9-]*)
+        new_todo "$1"
         ;;
     *)
         new_note "$1"
