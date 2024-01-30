@@ -69,10 +69,7 @@ pending_todos() {
 }
 
 generate_file_path() {
-    local offset="$1"
-    local year month day file_name
-
-    offset="${offset:-0}"
+    offset="${1:-0}"
 
     year=$(date -d "$offset days" +'%Y')
     month=$(date -d "$offset days" +'%m')
@@ -83,8 +80,6 @@ generate_file_path() {
 }
 
 new_todo() {
-    local todo_file template
-
     todo_file="log/$(generate_file_path "$1")"
     template="notes/templates/todo.md"
 
@@ -115,8 +110,6 @@ new_note() {
 }
 
 new_entry() {
-    local entry_file timestamp
-
     cd "$JOURNAL_DIR" || return
     entry_file="$(generate_file_path "$1")"
     timestamp=$(date +'%a, %d %b %y, %I:%m %p')
