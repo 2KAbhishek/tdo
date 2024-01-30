@@ -13,14 +13,18 @@ Options:
 -h | --help  | h | help:     shows this help message
 
 Example:
-# opens today's todo file
+# opens today's todo
 tdo
-# opens the note for vim in tech dir
-tdo tech/vim
+# opens tommorow's todo
+tdo 1
 # shows all pending todos
 tdo t
-# make a new entry
+# open today's journal entry
 tdo e
+# opens day before yesterday's journal entry
+tdo e -2
+# opens the note for vim.md in tech dir
+tdo tech/vim
 # searches for neovim in all notes
 tdo f neovim
 # review all notes
