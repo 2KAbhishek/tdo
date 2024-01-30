@@ -68,16 +68,25 @@ pending_todos() {
     cd - >/dev/null || return
 }
 
-new_todo() {
-    cd "$NOTES_DIR" || return
+generate_file_name() {
+    local year month file_name
+
     year=$(date +'%Y')
     month=$(date +'%m')
     file_name=$(date +'%Y-%m-%d.md')
-    todo_file="log/$year/$month/$file_name"
 
+    echo "$year/$month/$file_name"
+}
+
+new_todo() {
+    local todo_file template
+
+    todo_file="log/$(generate_file_name)"
+    template="notes/templates/todo.md"
+
+    cd "$NOTES_DIR" || return
     mkdir -p "$(dirname "$todo_file")"
     if [ ! -f "$todo_file" ]; then
-        template="notes/templates/todo.md"
         [ -f "$template" ] && cp "$template" "$todo_file"
     fi
     $EDITOR "$todo_file"
@@ -102,15 +111,14 @@ new_note() {
 }
 
 new_entry() {
-    cd "$JOURNAL_DIR" || return
-    year=$(date +'%Y')
-    month=$(date +'%m')
-    file_name=$(date +'%Y-%m-%d.md')
-    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
-    entry_file="$year/$month/$file_name"
+    local entry_file timestamp
 
+    cd "$JOURNAL_DIR" || return
+    entry_file="$(generate_file_name)"
+    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
+
+    mkdir -p "$(dirname "$entry_file")"
     if [ ! -f "$entry_file" ]; then
-        mkdir -p "$year/$month"
         cp template.md "$entry_file"
     fi
 
