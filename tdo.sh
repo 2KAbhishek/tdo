@@ -101,7 +101,7 @@ new_todo() {
 new_entry() {
     cd "$JOURNAL_DIR" || return
     entry_file="$(generate_file_path "$1")"
-    timestamp=$(date +'%a, %d %b %y, %I:%m %p')
+    timestamp=$(date +'%a, %d %b %y, %I:%M %p')
 
     mkdir -p "$(dirname "$entry_file")"
     if [ ! -f "$entry_file" ]; then
