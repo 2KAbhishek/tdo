@@ -97,14 +97,18 @@ add_timestamp() {
     echo -e "\n## $timestamp\n" >>"$file_path"
 }
 
+write_file() {
+    file_path="$1"
+    $EDITOR "$file_path"
+    commit_changes "$(dirname "$file_path")"
+}
+
 new_note() {
     root="$NOTES_DIR"
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
     create_file "$note_file" "$template"
-
-    $EDITOR "$note_file"
-    commit_changes "$root"
+    write_file "$note_file"
 }
 
 new_todo() {
@@ -112,9 +116,7 @@ new_todo() {
     todo_file="$root/todos/$(generate_file_path "$1")"
     template="$root/templates/todo.md"
     create_file "$todo_file" "$template"
-
-    $EDITOR "$todo_file"
-    commit_changes "$root"
+    write_file "$todo_file"
 }
 
 new_entry() {
@@ -123,9 +125,7 @@ new_entry() {
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
     add_timestamp "$entry_file"
-
-    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
-    commit_changes "$root"
+    write_file "$entry_file"
 }
 
 main() {
