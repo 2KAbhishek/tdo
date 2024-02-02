@@ -40,7 +40,7 @@ check_command() {
 }
 
 commit_changes() {
-    cd "${1-PWD}" || return
+    cd "${1-$PWD}" || return
     if [ -d ".git" ] || git rev-parse --git-dir >/dev/null 2>&1; then
         if [ -n "$(git status --porcelain)" ]; then
             timestamp=$(date +'%d %b %H:%M')
@@ -59,15 +59,15 @@ search() {
     rg -li --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
             --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
-    commit
+    commit_changes
 }
 
 pending_todos() {
     root="${TODOS_DIR:-$NOTES_DIR}"
     cd "$root" || return
-    rg -l --glob '!*/templates/*' '\[ \]' |
+    rg -l --glob '!/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
-    commit
+    commit_changes
 }
 
 generate_file_path() {
