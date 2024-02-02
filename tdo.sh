@@ -63,7 +63,7 @@ search() {
 }
 
 pending_todos() {
-    root="${TODOS_DIR:-NOTES_DIR}"
+    root="${TODOS_DIR:-$NOTES_DIR}"
     cd "$root" || return
     rg -l --glob '!*/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
@@ -108,7 +108,7 @@ new_note() {
 }
 
 new_todo() {
-    root="${TODOS_DIR:-NOTES_DIR}"
+    root="${TODOS_DIR:-$NOTES_DIR}"
     todo_file="$root/todos/$(generate_file_path "$1")"
     template="$root/templates/todo.md"
     create_file "$todo_file" "$template"
@@ -118,7 +118,7 @@ new_todo() {
 }
 
 new_entry() {
-    root="${JOURNAL_DIR:-NOTES_DIR}"
+    root="${JOURNAL_DIR:-$NOTES_DIR}"
     entry_file="$root/entries/$(generate_file_path "$1")"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
