@@ -39,7 +39,8 @@ check_command() {
     fi
 }
 
-commit() {
+commit_changes() {
+    cd "${1-PWD}" || return
     if [ -d ".git" ] || git rev-parse --git-dir >/dev/null 2>&1; then
         if [ -n "$(git status --porcelain)" ]; then
             timestamp=$(date +'%d %b %H:%M')
@@ -49,32 +50,28 @@ commit() {
             git push >/dev/null 2>&1 &
         fi
     fi
+    cd - >/dev/null || return
 }
 
 search() {
-    cd "$NOTES_DIR" || return
-
+    root="$NOTES_DIR"
+    cd "$root" || return
     rg -li --sort path "$1" |
         fzf --bind "enter:execute($EDITOR {})" \
             --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
-
     commit
-    cd - >/dev/null || return
 }
 
 pending_todos() {
-    cd "$NOTES_DIR" || return
-
+    root="${TODOS_DIR:-NOTES_DIR}"
+    cd "$root" || return
     rg -l --glob '!*/templates/*' '\[ \]' |
         fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
-
     commit
-    cd - >/dev/null || return
 }
 
 generate_file_path() {
     offset="${1:-0}"
-
     year=$(date -d "$offset days" +'%Y')
     month=$(date -d "$offset days" +'%m')
     day=$(date -d "$offset days" +'%d')
@@ -83,51 +80,52 @@ generate_file_path() {
     echo "$year/$month/$file_name"
 }
 
-new_todo() {
-    todo_file="log/$(generate_file_path "$1")"
-    template="notes/templates/todo.md"
+create_file() {
+    file_path="$1"
+    template_path="$2"
 
-    cd "$NOTES_DIR" || return
-    mkdir -p "$(dirname "$todo_file")"
-    if [ ! -f "$todo_file" ]; then
-        [ -f "$template" ] && cp "$template" "$todo_file"
+    mkdir -p "$(dirname "$file_path")"
+    if [ ! -f "$file_path" ]; then
+        [ -f "$template_path" ] && cp "$template_path" "$file_path"
     fi
-    $EDITOR "$todo_file"
-
-    commit
-    cd - >/dev/null || return
 }
 
-new_entry() {
-    cd "$JOURNAL_DIR" || return
-    entry_file="$(generate_file_path "$1")"
-    timestamp=$(date +'%a, %d %b %y, %I:%M %p')
-
-    mkdir -p "$(dirname "$entry_file")"
-    if [ ! -f "$entry_file" ]; then
-        cp template.md "$entry_file"
-    fi
-
-    echo -e "\n## $timestamp\n" >>"$entry_file"
-    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
-
-    commit
-    cd - >/dev/null || return
+add_timestamp() {
+    file_path="$1"
+    time_format="${2:-%a, %d %b %y, %I:%M %p}"
+    timestamp=$(date +"$time_format")
+    echo -e "\n## $timestamp\n" >>"$file_path"
 }
 
 new_note() {
-    cd "$NOTES_DIR" || return
-    notes_file="notes/$1.md"
+    root="$NOTES_DIR"
+    note_file="$root/notes/$1.md"
+    template="$root/templates/note.md"
+    create_file "$note_file" "$template"
 
-    mkdir -p "$(dirname "$notes_file")"
-    if [ ! -f "$notes_file" ]; then
-        template="notes/templates/note.md"
-        [ -f "$template" ] && cp "$template" "$notes_file"
-    fi
-    $EDITOR "$notes_file"
+    $EDITOR "$note_file"
+    commit_changes "$root"
+}
 
-    commit
-    cd - >/dev/null || return
+new_todo() {
+    root="${TODOS_DIR:-NOTES_DIR}"
+    todo_file="$root/todos/$(generate_file_path "$1")"
+    template="$root/templates/todo.md"
+    create_file "$todo_file" "$template"
+
+    $EDITOR "$todo_file"
+    commit_changes "$root"
+}
+
+new_entry() {
+    root="${JOURNAL_DIR:-NOTES_DIR}"
+    entry_file="$root/entries/$(generate_file_path "$1")"
+    template="$root/templates/entry.md"
+    create_file "$entry_file" "$template"
+    add_timestamp "$entry_file"
+
+    ${EDITOR:-vim} '+normal Go ' +startinsert "$entry_file"
+    commit_changes "$root"
 }
 
 main() {
