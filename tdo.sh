@@ -12,10 +12,11 @@ tdo: Todos and Notes, Blazingly Fast! 📃🚀
 Usage: tdo [options] [arguments]
 
 Options:
--e | --entry | e | entry:    searches for argument in notes
--f | --find  | f | find:     searches for argument in notes (alias: s/search)
--t | --todo  | t | todo:     shows all pending todos
--h | --help  | h | help:     shows this help message
+-e | --entry  | e | entry   searches for argument in notes
+-f | --find   | f | find    searches for argument in notes
+-s | --search | s | search  same as find
+-t | --todo   | t | todo    shows all pending todos
+-h | --help   | h | help    shows this help message
 
 Example:
 # opens today's todo

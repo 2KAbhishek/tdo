@@ -35,7 +35,7 @@ tdo is a opinionated, command line based note-taking system.
 ## ✨ Features
 
 - Can help you manage a daily log, todos, journal and notes
-- Quickly review pending todos, past journal entries, future todos and more
+- Quickly review pending and upcoming todos, past journal entries and more
 - Has interactive fuzzy searching capabilities powered by fzf
 - Blazingly fast, thanks to ripgrep
 - Integrates with git to commit and backup your notes automatically
@@ -48,11 +48,13 @@ tdo is a opinionated, command line based note-taking system.
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
 
-- `NOTES_DIR` env variable pointing to your notes directory
-- `TODO_DIR` optional, env variable pointing to your todos directory, if missing `NOTES_DIR/todos` will be used
-- `JOURNAL_DIR` optional, env variable pointing to your journal directory, if missing `NOTES_DIR/entries` will be used
+#### 📦 Environment Variables
 
-- `EDITOR` env variable set to your choice of editor
+- `NOTES_DIR` should point to your notes directory
+- `TODO_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
+- `JOURNAL_DIR` optional, should point to your journal directory, default: `NOTES_DIR/entries`
+
+- `EDITOR` set to your choice of editor
 
 ### 💻 Installation
 
@@ -73,10 +75,11 @@ echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
 Usage: tdo [options] [arguments]
 
 Options:
--e | --entry | e | entry:    searches for argument in notes
--f | --find  | f | find:     searches for argument in notes
--t | --todo  | t | todo:     shows all pending todos
--h | --help  | h | help:     shows this help message
+-e | --entry  | e | entry   searches for argument in notes
+-f | --find   | f | find    searches for argument in notes
+-s | --search | s | search  same as find
+-t | --todo   | t | todo    shows all pending todos
+-h | --help   | h | help    shows this help message
 
 Example:
 # opens today's todo
