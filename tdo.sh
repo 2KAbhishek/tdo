@@ -92,7 +92,7 @@ create_file() {
 
 add_timestamp() {
     file_path="$1"
-    time_format="${2:-%a, %d %b %y, %I:%M %p}"
+    time_format="${2:-%a, %I:%M %p}"
     timestamp=$(date +"$time_format")
     echo -e "\n## $timestamp\n" >>"$file_path"
 }
