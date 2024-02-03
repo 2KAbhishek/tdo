@@ -99,8 +99,12 @@ add_timestamp() {
 
 write_file() {
     file_path="$1"
-    $EDITOR "$file_path"
-    commit_changes "$(dirname "$file_path")"
+    if [ -t 1 ]; then
+        $EDITOR "$file_path"
+        commit_changes "$(dirname "$file_path")"
+    else
+        echo "$file_path" && exit 0
+    fi
 }
 
 new_note() {
