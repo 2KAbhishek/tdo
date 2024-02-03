@@ -8,7 +8,7 @@ Usage: tdo [options] [arguments]
 
 Options:
 -e | --entry | e | entry:    searches for argument in notes
--f | --find  | f | find:     searches for argument in notes
+-f | --find  | f | find:     searches for argument in notes (alias: s/search)
 -t | --todo  | t | todo:     shows all pending todos
 -h | --help  | h | help:     shows this help message
 
@@ -150,7 +150,7 @@ main() {
     -e | --entry | e | entry)
         new_entry "$2"
         ;;
-    -f | --find | f | find)
+    -f | --find | f | find | -s | --search | s | search)
         search "$2"
         ;;
     -h | --help | h | help)
