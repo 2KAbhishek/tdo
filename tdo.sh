@@ -1,5 +1,10 @@
 #!/bin/bash
 
+INTERACTIVE=false
+if [ -t 1 ]; then
+    INTERACTIVE=true
+fi
+
 display_help() {
     cat <<EOF
 tdo: Todos and Notes, Blazingly Fast! 📃🚀
@@ -82,7 +87,7 @@ add_timestamp() {
 
 write_file() {
     file_path="$1"
-    if [ -t 1 ]; then
+    if $INTERACTIVE; then
         $EDITOR "$file_path"
         commit_changes "$(dirname "$file_path")"
     else
@@ -94,7 +99,7 @@ search() {
     root="$NOTES_DIR"
     cd "$root" || return
 
-    if [ -t 1 ]; then
+    if $INTERACTIVE; then
         rg -li --sort path "$1" |
             fzf --bind "enter:execute($EDITOR {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
@@ -108,7 +113,7 @@ pending_todos() {
     root="${TODOS_DIR:-$NOTES_DIR}"
     cd "$root" || return
 
-    if [ -t 1 ]; then
+    if $INTERACTIVE; then
         rg -l --glob '!/templates/*' '\[ \]' |
             fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
