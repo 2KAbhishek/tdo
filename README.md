@@ -39,6 +39,7 @@ tdo is a opinionated, command line based note-taking system.
 - Has interactive fuzzy searching capabilities powered by fzf
 - Blazingly fast, thanks to ripgrep
 - Integrates with git to commit and backup your notes automatically
+- Can integrate with other tools in pipes and subshells for extended functionality
 
 ## ⚡ Setup
 
@@ -48,7 +49,9 @@ tdo is a opinionated, command line based note-taking system.
 - bat (optional, for syntax highlighting in search)
 
 - `NOTES_DIR` env variable pointing to your notes directory
-- `JOURNAL_DIR` env variable pointing to your journal directory (optional, if you want to have a separate journal)
+- `TODO_DIR` optional, env variable pointing to your todos directory, if missing `NOTES_DIR/todos` will be used
+- `JOURNAL_DIR` optional, env variable pointing to your journal directory, if missing `NOTES_DIR/entries` will be used
+
 - `EDITOR` env variable set to your choice of editor
 
 ### 💻 Installation
@@ -98,21 +101,26 @@ The look and feel of the fzf window can be configured using env variables, check
 
 ### 📁 Dir Structure
 
-`tdo` expects a certain directory structure to function.
+`tdo` expects an opinionated directory structure to function.
 
-#### 📓 Notes
-
-- Todos are kept in `log` dir, these can also be used for short term notes
-- Todos use the `notes/templates/todo.md` file as template
-- Long term notes are to be categorized under the `notes` dir
-- Notes use the `notes/templates/note.md` file as template
+- Notes are kept in the `notes` dir, these are used for long term storage, second brain
+- Notes use the `templates/note.md` file as template
+- Todos are kept in `todos` dir, these can used for short term notes, daily todos
+- Todos use the `templates/todo.md` file as template
+- Journal entries are kept in `entries` dir, these are used for personal notes, life logging
+- Journal entries use the `templates/entry.md` file as template
 
 ```
-├── log
+├── todos
 │   └── 2023
 │       └── 11
 │           ├── 2023-11-28.md
 │           └── 2023-11-29.md
+├── entries
+│   └── 2024
+│       └── 02
+│           ├── 2024-02-02.md
+│           └── 2024-02-03.md
 └── notes
     ├── tech
     │   └── quit-vim.md
@@ -122,27 +130,9 @@ The look and feel of the fzf window can be configured using env variables, check
         └── todo.md
 ```
 
-#### ✍️ Journal
-
-For journal entries we have a simpler directory structure.
-
-- Entries are placed in year/month/day md files
-- Template path is `$ENTYR_DIR/template.md`
-
-```
-├── 2023
-│   ├── 10
-│   ├── 11
-│   └── 12
-│       ├── 2023-12-12.md
-│       ├── 2023-12-13.md
-│       └── 2023-12-15.md
-└── template.md
-```
-
 ### 💾 Git Integration
 
-If either of your `$NOTES_DIR` or `$JOURNAL_DIR` is under git, tdo will automatically commit and push every change with the timestamp like `Fri, 15 Dec 23, 10:53 AM` as commit message.
+If any of your notes directory is under git, tdo will automatically commit and push every change with a timestamp like `03 Feb 11:33` as commit message.
 
 ## 🏗️ What's Next
 
