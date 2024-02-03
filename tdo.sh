@@ -53,23 +53,6 @@ commit_changes() {
     cd - >/dev/null || return
 }
 
-search() {
-    root="$NOTES_DIR"
-    cd "$root" || return
-    rg -li --sort path "$1" |
-        fzf --bind "enter:execute($EDITOR {})" \
-            --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
-    commit_changes
-}
-
-pending_todos() {
-    root="${TODOS_DIR:-$NOTES_DIR}"
-    cd "$root" || return
-    rg -l --glob '!/templates/*' '\[ \]' |
-        fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
-    commit_changes
-}
-
 generate_file_path() {
     offset="${1:-0}"
     year=$(date -d "$offset days" +'%Y')
@@ -104,6 +87,33 @@ write_file() {
         commit_changes "$(dirname "$file_path")"
     else
         echo "$file_path" && exit 0
+    fi
+}
+
+search() {
+    root="$NOTES_DIR"
+    cd "$root" || return
+
+    if [ -t 1 ]; then
+        rg -li --sort path "$1" |
+            fzf --bind "enter:execute($EDITOR {})" \
+                --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
+        commit_changes
+    else
+        rg -li --sort path "$1" "$root"
+    fi
+}
+
+pending_todos() {
+    root="${TODOS_DIR:-$NOTES_DIR}"
+    cd "$root" || return
+
+    if [ -t 1 ]; then
+        rg -l --glob '!/templates/*' '\[ \]' |
+            fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
+        commit_changes
+    else
+        rg -l --glob '!/templates/*' '\[ \]' "$root"
     fi
 }
 
