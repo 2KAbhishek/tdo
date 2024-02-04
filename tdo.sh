@@ -131,6 +131,11 @@ new_note() {
     write_file "$note_file"
 }
 
+note_with_prompt() {
+    title=$(read -rp "Enter title: " && echo "${REPLY:-drafts/$(date +'%m-%d-%H-%M-%S')}")
+    new_note "$title"
+}
+
 new_todo() {
     root="${TODOS_DIR:-$NOTES_DIR}"
     todo_file="$root/todos/$(generate_file_path "$1")"
@@ -161,6 +166,9 @@ main() {
         ;;
     -h | --help | h | help)
         display_help
+        ;;
+    -n | --note | n | note)
+        note_with_prompt
         ;;
     -t | --todo | t | todo)
         pending_todos
