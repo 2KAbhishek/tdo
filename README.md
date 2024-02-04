@@ -20,7 +20,7 @@
 <a href="https://github.com/2KAbhishek/tdo/pulse">
 <img alt="Last Updated" src="https://img.shields.io/github/last-commit/2kabhishek/tdo?style=flat&color=e06c75&label="> </a>
 
-<h3>Todos and Notes, Blazingly Fast! 📃🚀</h3>
+<h3>Fast & Simple Note Taking! 📃🚀</h3>
 
 <figure>
   <img src="images/screenshot.jpg" alt="tdo in action">
@@ -40,6 +40,7 @@ tdo is a opinionated, command line based note-taking system.
 - Blazingly fast, thanks to ripgrep
 - Integrates with git to commit and backup your notes automatically
 - Can integrate with other tools in pipes and subshells for extended functionality
+- Supports all editors, just set `$EDITOR` to your choice
 
 ## ⚡ Setup
 
@@ -66,82 +67,63 @@ cd tdo
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 # Create a notes dir if not already present
 mkdir -p ~/Projects/notes
-# Add the NOTES_DIR env var to your shell config (~/.bashrc | ~/.zshrc | ~/.profile)
-echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
+# Add the NOTES_DIR env var to your shell config ~/.bashrc, ~/.zshrc etc
+echo "NOTES_DIR=~/Projects/notes" >> ~/.zshrc
+# Reload shell config
+source ~/.zshrc
+# Add sample templates to your NOTES_DIR
+cp templates $NOTES_DIR
 ```
 
 ## 🚀 Usage
 
-```bash
-tdo: Todos and Notes, Blazingly Fast! 📃🚀
+If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhishek/tdo.nvim), it seamlessly integrates `tdo` and `nvim` and adds some useful features on top.
 
-Usage: tdo [command | note_path | offset]
+- `tdo` to open today's todos
+- `tdo <offset_days>` to open todos from `offset_days` in the past or future, e.g: `tdo 1`, `tdo -2`
+- `tdo <note_title>` to open or create a `note_tile.md` note, use folder names to categorise notes, e.g: `tdo tech/vim-tips`
+- `tdo note` or `tdo n` to create a new note with the current timestamp in `drafts`
+- `tdo entry` or `tdo e` to open today's journal entry
+- `tdo entry <offset_days>` to open journal entry from `offset_days` in the past or future, e.g: `tdo e -3`
+- `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
+- `tdo find` without any search term to review all your notes
+- `tdo todo` or `tdo t` to review all your pending todos
 
-Commands:
--e | --entry  | e | entry   creates a new journal entry, accepts offset
--f | --find   | f | find    searches for argument term in notes
--n | --note   | n | note    creates a new note with title from user prompt
-                            uses current time if no title is provided
--s | --search | s | search  same as find
--t | --todo   | t | todo    shows all pending todos
--h | --help   | h | help    shows this help message
-
-Example:
-# open today's todo
-tdo
-# open tommorow's todo
-tdo 1
-# open or create the note tech/vim.md
-tdo tech/vim
-# open today's journal entry
-tdo e
-# open day before yesterday's journal entry
-tdo e -2
-# search for neovim in all notes
-tdo f neovim
-# review all notes
-tdo f
-# show all pending todos
-tdo t
-
-```
-
-The look and feel of the fzf window can be configured using env variables, check [fzf docs](https://github.com/junegunn/fzf#environment-variables) for more.
+> Run `tod h` to get help info on the command line
 
 ### 📁 Dir Structure
 
 `tdo` expects an opinionated directory structure to function.
 
 - Notes are kept in the `notes` dir, these are used for long term storage, second brain
-- Notes use the `templates/note.md` file as template
+- Notes use the [templates/note.md](./templates/note.md) file as template
 - Todos are kept in `todos` dir, these can used for short term notes, daily todos
-- Todos use the `templates/todo.md` file as template
+- Todos use the [templates/todo.md](./templates/todo.md) file as template
 - Journal entries are kept in `entries` dir, these are used for personal notes, life logging
-- Journal entries use the `templates/entry.md` file as template
+- Journal entries use the [templates/entry.md](./templates/entry.md) file as template
 
 ```
 ├── todos
 │   └── 2023
 │       └── 11
-│           ├── 2023-11-28.md
 │           └── 2023-11-29.md
 ├── entries
 │   └── 2024
 │       └── 02
-│           ├── 2024-02-02.md
 │           └── 2024-02-03.md
-└── notes
-    ├── tech
-    │   └── quit-vim.md
-    │   └── arch-btw.md
-    └── templates
-        ├── note.md
-        └── todo.md
+│── notes
+│   └── tech
+│       └── quit-vim.md
+│       └── arch-btw.md
+└── templates
+    ├── entry.md
+    └── note.md
+    └── todo.md
 ```
 
 ### 💾 Git Integration
 
-If any of your notes directory is under git, tdo will automatically commit and push every change with a timestamp like `03 Feb 11:33` as commit message.
+If any of your notes directory is under git, tdo will automatically commit every change with a timestamp like `03 Feb 11:33` as commit message.
 
 ## 🏗️ What's Next
 
@@ -153,7 +135,7 @@ You tell me!
 
 After trying out every note management system under the sun I had decided on using plain markdown notes [powered by nvim2k](https://youtu.be/FP7sQhc8kek).
 
-tdo is a spiritual successor and complimentary tool to that, taking the same principles and making it more accessible.
+tdo is a spiritual successor and complimentary tool to that, taking the same principles and making it more accessible and simple.
 
 ### 🧰 Tooling
 
