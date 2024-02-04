@@ -72,32 +72,37 @@ echo "NOTES_DIR=~/Projects/notes" >> ~/.profile
 ## 🚀 Usage
 
 ```bash
-Usage: tdo [options] [arguments]
+tdo: Todos and Notes, Blazingly Fast! 📃🚀
 
-Options:
--e | --entry  | e | entry   searches for argument in notes
--f | --find   | f | find    searches for argument in notes
+Usage: tdo [command | note_path | offset]
+
+Commands:
+-e | --entry  | e | entry   creates a new journal entry, accepts offset
+-f | --find   | f | find    searches for argument term in notes
+-n | --note   | n | note    creates a new note with title from user prompt
+                            uses current time if no title is provided
 -s | --search | s | search  same as find
 -t | --todo   | t | todo    shows all pending todos
 -h | --help   | h | help    shows this help message
 
 Example:
-# opens today's todo
+# open today's todo
 tdo
-# opens tommorow's todo
+# open tommorow's todo
 tdo 1
-# shows all pending todos
-tdo t
+# open or create the note tech/vim.md
+tdo tech/vim
 # open today's journal entry
 tdo e
-# opens day before yesterday's journal entry
+# open day before yesterday's journal entry
 tdo e -2
-# opens the note for vim.md in tech dir
-tdo tech/vim
-# searches for neovim in all notes
+# search for neovim in all notes
 tdo f neovim
 # review all notes
 tdo f
+# show all pending todos
+tdo t
+
 ```
 
 The look and feel of the fzf window can be configured using env variables, check [fzf docs](https://github.com/junegunn/fzf#environment-variables) for more.
