@@ -65,11 +65,15 @@ commit_changes() {
 
 generate_file_path() {
     offset="${1:-0}"
-    year=$(date -d "$offset days" +'%Y')
-    month=$(date -d "$offset days" +'%m')
-    day=$(date -d "$offset days" +'%d')
+    date_cmd="date"
+    if [ "$(uname)" == "Darwin" ]; then
+        check_command "gdate"
+        date_cmd="gdate"
+    fi
+    year=$($date_cmd -d "$offset days" +'%Y')
+    month=$($date_cmd -d "$offset days" +'%m')
+    day=$($date_cmd -d "$offset days" +'%d')
     file_name="${year}-${month}-${day}.md"
-
     echo "$year/$month/$file_name"
 }
 

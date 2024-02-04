@@ -47,6 +47,7 @@ tdo is a opinionated, command line based note-taking system.
 
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
+- coreutils (required on MacOS only, for gdate command)
 
 #### 📦 Environment Variables
 
