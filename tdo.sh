@@ -14,9 +14,7 @@ Usage: tdo [command | note_path | offset]
 Commands:
 -e | --entry  | e | entry   creates a new journal entry, accepts offset
 -f | --find   | f | find    searches for argument term in notes
--n | --note   | n | note    creates a new note with title from user prompt
-                            uses current time if no title is provided
--s | --search | s | search  same as find
+-n | --note   | n | note    creates a new draft note with timestamp title
 -t | --todo   | t | todo    shows all pending todos
 -h | --help   | h | help    shows this help message
 
@@ -27,6 +25,8 @@ tdo
 tdo 1
 # open or create the note tech/vim.md
 tdo tech/vim
+# creates a new draft note
+tdo n
 # open today's journal entry
 tdo e
 # open day before yesterday's journal entry
@@ -104,7 +104,7 @@ write_file() {
     fi
 }
 
-search() {
+find_note() {
     root="$NOTES_DIR"
     cd "$root" || return
 
@@ -139,8 +139,8 @@ new_note() {
     write_file "$note_file"
 }
 
-note_with_prompt() {
-    title=$(read -rp "Enter title: " && echo "${REPLY:-drafts/$(date +'%m-%d-%H-%M-%S')}")
+draft_note() {
+    title='drafts/'$(date +'%m-%d-%H-%M-%S')
     new_note "$title"
 }
 
@@ -169,14 +169,14 @@ main() {
     -e | --entry | e | entry)
         new_entry "$2"
         ;;
-    -f | --find | f | find | -s | --search | s | search)
-        search "$2"
+    -f | --find | f | find)
+        find_note "$2"
         ;;
     -h | --help | h | help)
         display_help
         ;;
     -n | --note | n | note)
-        note_with_prompt
+        draft_note
         ;;
     -t | --todo | t | todo)
         pending_todos
