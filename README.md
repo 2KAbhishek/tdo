@@ -36,9 +36,8 @@ tdo is a opinionated, command line based note-taking system.
 
 - Can help you manage a daily log, todos, journal and notes
 - Quickly review pending and upcoming todos, past journal entries and more
+- Integrates with git to commit and backup your notes automatically, check [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) for neovim integration
 - Has interactive fuzzy searching capabilities powered by fzf
-- Blazingly fast, thanks to ripgrep
-- Integrates with git to commit and backup your notes automatically
 - Can integrate with other tools in pipes and subshells for extended functionality
 - Supports all editors, just set `$EDITOR` to your choice
 
@@ -87,7 +86,7 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 - `tdo entry <offset_days>` to open journal entry from `offset_days` in the past or future, e.g: `tdo e -3`
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
-- `tdo todo` or `tdo t` to review all your pending todos
+- `tdo todo` or `tdo t` to show all your pending todos
 - `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, only needed for plugins
 
 > Run `tod h` to get help info on the command line
