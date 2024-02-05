@@ -12,6 +12,7 @@ tdo: Todos and Notes, Blazingly Fast! 📃🚀
 Usage: tdo [command | note_path | offset]
 
 Commands:
+-s | --save   | s | save    commits changes in the argument directory
 -e | --entry  | e | entry   creates a new journal entry, accepts offset
 -f | --find   | f | find    searches for argument term in notes
 -n | --note   | n | note    creates a new draft note with timestamp title
@@ -57,7 +58,6 @@ commit_changes() {
             git pull --rebase --autostash >/dev/null 2>&1 &
             git add .
             git commit -m "$timestamp" >/dev/null 2>&1 &
-            git push >/dev/null 2>&1 &
         fi
     fi
     cd - >/dev/null || return
@@ -166,6 +166,9 @@ main() {
     check_command "fzf"
 
     case "$1" in
+    -c | --commit | c | commit)
+        commit_changes "$2"
+        ;;
     -e | --entry | e | entry)
         new_entry "$2"
         ;;

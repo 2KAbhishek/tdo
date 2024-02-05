@@ -88,6 +88,7 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
 - `tdo todo` or `tdo t` to review all your pending todos
+- `tdo save <path>` or `tdo s` to commit changes in path, happens automatically, only needed for plugins
 
 > Run `tod h` to get help info on the command line
 
