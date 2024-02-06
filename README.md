@@ -52,7 +52,7 @@ tdo is a opinionated, command line based note-taking system.
 #### 📦 Environment Variables
 
 - `NOTES_DIR` should point to your notes directory
-- `TODO_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
+- `TODOS_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
 - `JOURNAL_DIR` optional, should point to your journal directory, default: `NOTES_DIR/entries`
 
 - `EDITOR` set to your choice of editor
@@ -62,16 +62,26 @@ tdo is a opinionated, command line based note-taking system.
 ```bash
 git clone https://github.com/2kabhishek/tdo
 cd tdo
+./install.sh
+```
+
+#### 🐚 Manual Installation
+
+If you want to customize the setup or are facing issues with installation, you can set up tdo manually.
+
+Change these commands according to your needs.
+
+```bash
 # Link tdo to a directory that's in PATH (~/.local/bin here)
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 # Create a notes dir if not already present
-mkdir -p ~/Projects/notes
+mkdir -p $HOME/Projects/Notes
 # Add the NOTES_DIR env var to your shell config ~/.bashrc, ~/.zshrc etc
-echo "NOTES_DIR=~/Projects/notes" >> ~/.zshrc
+echo "NOTES_DIR=$HOME/Projects/Notes" >> ~/.zshrc
+# Add sample templates to your NOTES_DIR
+cp -irv templates $NOTES_DIR
 # Reload shell config
 source ~/.zshrc
-# Add sample templates to your NOTES_DIR
-cp templates $NOTES_DIR
 ```
 
 ## 🚀 Usage
