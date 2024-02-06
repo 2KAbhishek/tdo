@@ -84,6 +84,21 @@ cp -irv templates $NOTES_DIR
 source ~/.zshrc
 ```
 
+#### 💾 Git Integration
+
+If you want to sync your notes across devices, you can set up a git repo on the $NOTES_DIR and add GitHub/GitLab as remote.
+
+```bash
+cd $NOTES_DIR
+git init
+git add .
+git commit -m 'init: notes'
+git remote add origin <your-remote-git-url>
+git push origin main
+```
+
+tdo will automatically commit every change with a timestamp like `03 Feb 11:33` as commit message.
+
 ## 🚀 Usage
 
 If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhishek/tdo.nvim), it seamlessly integrates `tdo` and `nvim` and adds some useful features on top.
@@ -130,10 +145,6 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
     └── note.md
     └── todo.md
 ```
-
-### 💾 Git Integration
-
-If any of your notes directory is under git, tdo will automatically commit every change with a timestamp like `03 Feb 11:33` as commit message.
 
 ## 🏗️ What's Next
 
