@@ -166,30 +166,14 @@ main() {
     check_command "fzf"
 
     case "$1" in
-    -c | --commit | c | commit)
-        commit_changes "$(dirname "$2")"
-        ;;
-    -e | --entry | e | entry)
-        new_entry "$2"
-        ;;
-    -f | --find | f | find)
-        find_note "$2"
-        ;;
-    -h | --help | h | help)
-        display_help
-        ;;
-    -n | --note | n | note)
-        draft_note
-        ;;
-    -t | --todo | t | todo)
-        pending_todos
-        ;;
-    "" | [0-9-]*)
-        new_todo "$1"
-        ;;
-    *)
-        new_note "$1"
-        ;;
+    -c | --commit | c | commit) commit_changes "$(dirname "$2")" ;;
+    -e | --entry | e | entry) new_entry "$2" ;;
+    -f | --find | f | find) find_note "$2" ;;
+    -h | --help | h | help) display_help ;;
+    -n | --note | n | note) draft_note ;;
+    -t | --todo | t | todo) pending_todos ;;
+    "" | [0-9-]*) new_todo "$1" ;;
+    *) new_note "$1" ;;
     esac
 }
 
