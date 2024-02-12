@@ -10,10 +10,7 @@ case "$SHELL" in
 */bash) exports_file="$HOME/.bashrc" ;;
 */zsh) exports_file="$HOME/.zshrc" ;;
 */fish) exports_file="$HOME/.config/fish/config.fish" ;;
-*)
-    echo "Unsupported shell. Please set the environment variables manually in your shell configuration file."
-    exit 1
-    ;;
+*) echo "Unsupported shell. Please set the environment variables manually." && exit 1 ;;
 esac
 
 mkdir -p ~/.local/bin
