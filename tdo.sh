@@ -7,7 +7,7 @@ fi
 
 display_help() {
     cat <<EOF
-tdo: Todos and Notes, Blazingly Fast! 📃🚀
+tdo: Fast & Simple Note Taking! 📃🚀
 
 Usage: tdo [command | note_path | offset]
 
