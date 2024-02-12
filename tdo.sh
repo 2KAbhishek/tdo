@@ -50,6 +50,13 @@ check_command() {
     fi
 }
 
+check_env() {
+    if [ -z "${!1}" ]; then
+        echo "Error: The $1 environment variable is not set. Run the install script first."
+        exit 1
+    fi
+}
+
 commit_changes() {
     cd "${1-$PWD}" || return
     if [ -d ".git" ] || git rev-parse --git-dir >/dev/null 2>&1; then
@@ -164,6 +171,7 @@ new_entry() {
 main() {
     check_command "rg"
     check_command "fzf"
+    check_env "NOTES_DIR"
 
     case "$1" in
     -c | --commit | c | commit) commit_changes "$(dirname "$2")" ;;
