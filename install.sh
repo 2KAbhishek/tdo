@@ -26,7 +26,7 @@ if [ ! -d "$NOTES_DIR" ]; then
     echo "export NOTES_DIR=$NOTES_DIR" >>"$exports_file"
 fi
 
-cp -irv templates/ "$NOTES_DIR"
+cp -irv templates/ "$NOTES_DIR/templates"
 
 echo "tdo setup completed successfully!"
 echo "Please make sure to reload your shell configuration using 'source $exports_file'."
