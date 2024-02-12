@@ -114,7 +114,7 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 - `tdo todo` or `tdo t` to show all your pending todos
 - `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, only needed for plugins
 
-> Run `tod h` to get help info on the command line
+> Run `tdo h` to get help info on the command line
 
 ### 📁 Dir Structure
 
