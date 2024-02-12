@@ -49,14 +49,6 @@ tdo is a opinionated, command line based note-taking system.
 - bat (optional, for syntax highlighting in search)
 - coreutils (required on macOS only, for gdate command)
 
-#### 📦 Environment Variables
-
-- `NOTES_DIR` should point to your notes directory
-- `TODOS_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
-- `JOURNAL_DIR` optional, should point to your journal directory, default: `NOTES_DIR/entries`
-
-- `EDITOR` set to your choice of editor
-
 ### 💻 Installation
 
 ```bash
@@ -64,6 +56,14 @@ git clone https://github.com/2kabhishek/tdo
 cd tdo
 ./install.sh
 ```
+
+#### 📦 Environment Variables
+
+- `NOTES_DIR` should point to your notes directory
+- `TODOS_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
+- `JOURNAL_DIR` optional, should point to your journal directory, default: `NOTES_DIR/entries`
+
+- `EDITOR` set to your choice of editor
 
 #### 🐚 Manual Installation
 
