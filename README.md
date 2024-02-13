@@ -30,7 +30,7 @@
 
 </div>
 
-tdo is a opinionated, command line based note-taking system.
+tdo is a opinionated, command line based note-taking system. [Demo video](https://youtu.be/N4IRT7M-RLg)
 
 ## ✨ Features
 
