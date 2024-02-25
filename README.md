@@ -35,11 +35,11 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 ## ✨ Features
 
 - Can help you manage a daily log, todos, journal and notes
-- Quickly review pending and upcoming todos, past journal entries and more
+- Review pending and upcoming todos, past journal entries and more
 - Integrates with git to commit and backup your notes automatically, check [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) for neovim integration
 - Has interactive fuzzy searching capabilities powered by fzf
 - Can integrate with other tools in pipes and subshells for extended functionality
-- Supports all editors, just set `$EDITOR` to your choice
+- Supports all editors, set `$EDITOR` to your choice
 
 ## ⚡ Setup
 
@@ -47,7 +47,7 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
-- coreutils (required on macOS only, for gdate command)
+- coreutils (required on macOS, for gdate command)
 
 ### 💻 Installation
 
@@ -112,7 +112,7 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
 - `tdo todo` or `tdo t` to show all your pending todos
-- `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, only needed for plugins
+- `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, needed for plugins and integrations
 
 > Run `tdo h` to get help info on the command line
 
@@ -120,11 +120,11 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 
 `tdo` expects an opinionated directory structure to function.
 
-- Notes are kept in the `notes` dir, these are used for long term storage, second brain
+- Notes live in the `notes` sub-dir, use these for long term knowledge management, second brain
 - Notes use the [templates/note.md](./templates/note.md) file as template
-- Todos are kept in `todos` dir, these can used for short term notes, daily todos
+- Todos live in the `todos` sub-dir, use these for short term notes, daily todos
 - Todos use the [templates/todo.md](./templates/todo.md) file as template
-- Journal entries are kept in `entries` dir, these are used for personal notes, life logging
+- Journal entries live in `entries` sub-dir, use these for personal notes, life logging
 - Journal entries use the [templates/entry.md](./templates/entry.md) file as template
 
 ```
@@ -158,16 +158,19 @@ After trying out every note management system under the sun I had decided on usi
 
 tdo is a spiritual successor and complimentary tool to that, taking the same principles and making it more accessible and simple.
 
+### 🔍 More CLI Tools
+
+- [cmtr](https://github.com/2kabhishek/cmtr) — Fast git commits
+- [mkrepo](https://github.com/2kabhishek/mkrepo) — Spin up new GitHub repos from the CLI
+- [ghpm](https://github.com/2kabhishek/ghpm) — Manage all your GitHub repos
+- [gsync](https://github.com/2kabhishek/gsync) — Sync your git repos
+
 ### 🧰 Tooling
 
 - [dots2k](https://github.com/2kabhishek/dots2k) — Dev Environment
 - [nvim2k](https://github.com/2kabhishek/nvim2k) — Personalized Editor
 - [sway2k](https://github.com/2kabhishek/sway2k) — Desktop Environment
 - [qute2k](https://github.com/2kabhishek/qute2k) — Personalized Browser
-
-### 🔍 More Info
-
-- [cmtr](https://github.com/2kabhishek/cmtr) — Easily commit and backup your notes
 
 <hr>
 

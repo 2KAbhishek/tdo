@@ -22,7 +22,7 @@ Commands:
 Example:
 # open today's todo
 tdo
-# open tommorow's todo
+# open tomorrow's todo
 tdo 1
 # open or create the note tech/vim.md
 tdo tech/vim
