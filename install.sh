@@ -17,13 +17,19 @@ mkdir -p ~/.local/bin
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 
 if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
-    echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$exports_file"
+    case "$SHELL" in
+    */fish) fish -c "fish_add_path $HOME/.local/bin" ;;
+    *) echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$exports_file" ;;
+    esac
 fi
 
 if [ ! -d "$NOTES_DIR" ]; then
     NOTES_DIR="$HOME/Projects/notes"
     mkdir -p "$NOTES_DIR"
-    echo "export NOTES_DIR=$NOTES_DIR" >>"$exports_file"
+    case "$SHELL" in
+    */fish) fish -c "set -Ux NOTES_DIR $NOTES_DIR" ;;
+    *) echo "export NOTES_DIR=$NOTES_DIR" >>"$exports_file" ;;
+    esac
 fi
 
 cp -irv templates/ "$NOTES_DIR/"
