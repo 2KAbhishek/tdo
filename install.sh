@@ -15,7 +15,9 @@ install_shell() {
     if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >>"$exports_file"
     fi
-    echo "export NOTES_DIR=$NOTES_DIR" >>"$exports_file"
+    if ! printenv NOTES_DIR > /dev/null; then
+        echo "export NOTES_DIR=$NOTES_DIR" >>"$exports_file"
+    fi
 }
 
 if [ -z "$EDITOR" ]; then
