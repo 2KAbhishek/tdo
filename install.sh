@@ -25,7 +25,7 @@ if [ ! -d "$NOTES_DIR" ]; then
     NOTES_DIR="$HOME/Projects/notes"
     mkdir -p "$NOTES_DIR"
 fi
-
+cp -irv templates "$NOTES_DIR/"
 mkdir -p ~/.local/bin
 ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 
@@ -35,8 +35,6 @@ case "$SHELL" in
 */fish) install_fish ;;
 *) echo "Unsupported shell. Please set the environment variables manually." && exit 1 ;;
 esac
-
-cp -irv templates "$NOTES_DIR/"
 
 echo "tdo setup completed successfully!"
 echo "Please make sure to reload your shell"
