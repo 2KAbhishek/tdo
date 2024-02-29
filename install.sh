@@ -5,7 +5,9 @@ install_fish() {
     if [[ ":$PATH:" != *":$HOME/.local/bin:"* ]]; then
         fish -c "fish_add_path $HOME/.local/bin"
     fi
-    fish -c "set -Ux NOTES_DIR $NOTES_DIR"
+    if ! printenv NOTES_DIR > /dev/null; then
+        fish -c "set -Ux NOTES_DIR $NOTES_DIR"
+    fi
 }
 
 install_shell() {
