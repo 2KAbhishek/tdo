@@ -73,7 +73,7 @@ commit_changes() {
 generate_file_path() {
     offset="${1:-0}"
     date_cmd="date"
-    if [ "$(uname)" == "Darwin" ]; then
+    if [ "$(uname)" = "Darwin" ]; then
         check_command "gdate"
         date_cmd="gdate"
     fi
