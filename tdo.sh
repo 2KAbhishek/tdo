@@ -126,12 +126,18 @@ find_note() {
 }
 
 pending_todos() {
+    local todo_cmd=''
+    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
+        todo_cmd='+"/[\ \]" +"norm! n"'
+    fi
+    local editor="$EDITOR $todo_cmd"
+
     root="${TODOS_DIR:-$NOTES_DIR}"
     cd "$root" || return
 
     if $INTERACTIVE; then
         rg -l --glob '!/templates/*' '\[ \]' |
-            fzf --bind "enter:execute($EDITOR {})" --preview 'rg -e "\[ \]" {}'
+            fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
     else
         rg -l --glob '!/templates/*' '\[ \]' "$root"
