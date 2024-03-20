@@ -103,7 +103,10 @@ add_timestamp() {
 
 write_file() {
     file_path="$1"
+    root="$2"
+
     if $INTERACTIVE; then
+        cd "$root" || return
         $EDITOR "$file_path"
         commit_changes "$(dirname "$file_path")"
     else
@@ -113,9 +116,9 @@ write_file() {
 
 find_note() {
     root="$NOTES_DIR"
-    cd "$root" || return
 
     if $INTERACTIVE; then
+        cd "$root" || return
         rg -li --sort path "$1" |
             fzf --bind "enter:execute($EDITOR {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
@@ -133,9 +136,9 @@ pending_todos() {
     local editor="$EDITOR $todo_cmd"
 
     root="${TODOS_DIR:-$NOTES_DIR}"
-    cd "$root" || return
 
     if $INTERACTIVE; then
+        cd "$root" || return
         rg -l --glob '!/templates/*' '\[ \]' |
             fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
@@ -149,7 +152,7 @@ new_note() {
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
     create_file "$note_file" "$template"
-    write_file "$note_file"
+    write_file "$note_file" "$root"
 }
 
 draft_note() {
@@ -162,7 +165,7 @@ new_todo() {
     todo_file="$root/todos/$(generate_file_path "$1")"
     template="$root/templates/todo.md"
     create_file "$todo_file" "$template"
-    write_file "$todo_file"
+    write_file "$todo_file" "$root"
 }
 
 new_entry() {
@@ -171,7 +174,7 @@ new_entry() {
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
     add_timestamp "$entry_file"
-    write_file "$entry_file"
+    write_file "$entry_file" "$root"
 }
 
 main() {
