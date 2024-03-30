@@ -88,8 +88,8 @@ create_file() {
     file_path="$1"
     template_path="$2"
 
-    mkdir -p "$(dirname "$file_path")"
     if [ ! -f "$file_path" ]; then
+        mkdir -p "$(dirname "$file_path")"
         [ -f "$template_path" ] && cp "$template_path" "$file_path"
     fi
 }
