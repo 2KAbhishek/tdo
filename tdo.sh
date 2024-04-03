@@ -43,6 +43,43 @@ For more information, visit https://github.com/2kabhishek/tdo
 EOF
 }
 
+config_setup() {
+    # List of variable names to check
+    local env_vars=("TIMESTAMP_ENTRY" "TIMESTAMP_NEWNOTE" "ENTRY_TIMESTAMP" "NOTE_TIMESTAMP" "FILE_NAME_AS_TITLE")
+
+    # Check if any of the variables are set as environment variables
+    local env_variables_set=false
+    for var in "${env_vars[@]}"; do
+        if [ ! -z "${!var}" ]; then
+            env_variables_set=true
+            break
+        fi
+    done
+
+    # Function to source the configuration file if it exists
+    source_config_file() {
+        local config_file="$HOME/.config/tdorc"
+        if [ -f "$config_file" ]; then
+            source "$config_file"
+        fi
+    }
+
+    # If none of the variables are set as environment variables, source the config file
+    if [ "$env_variables_set" = false ]; then
+        source_config_file
+    fi
+}
+
+# validate whether a variable is set to true or false, and set to default otherwise
+validate_and_set() {
+    local default_val="${2:-true}"
+    local var_value="${1:-$default_val}"
+    if [[ "$var_value" != "true" && "$var_value" != "false" ]]; then
+        var_value=$default_val
+    fi
+    echo "$var_value"
+}
+
 check_command() {
     if ! command -v "$1" &>/dev/null; then
         echo "Error: The $1 command is not available. Make sure it is installed."
@@ -151,7 +188,12 @@ new_note() {
     root="$NOTES_DIR"
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
+    [ ! -f "$note_file" ] && new_file="true" || new_file="false"
     create_file "$note_file" "$template"
+    if [ "$new_file" = "true" ]; then
+      [ "$(validate_and_set "${FILE_NAME_AS_TITLE}" false)" = "true" ] && echo -e "# $1" >>"$note_file"
+      [ "$(validate_and_set "${TIMESTAMP_NEWNOTE}" false)" = "true" ] && add_timestamp "$note_file" "${NOTE_TIMESTAMP:-}"
+    fi
     write_file "$note_file" "$root"
 }
 
@@ -173,7 +215,7 @@ new_entry() {
     entry_file="$root/entries/$(generate_file_path "$1")"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
-    add_timestamp "$entry_file"
+    [ "$(validate_and_set "${TIMESTAMP_ENTRY}")" = "true" ] && add_timestamp "$entry_file" "${ENTRY_TIMESTAMP:-}"
     write_file "$entry_file" "$root"
 }
 
@@ -181,6 +223,7 @@ main() {
     check_command "rg"
     check_command "fzf"
     check_env "NOTES_DIR"
+    config_setup
 
     case "$1" in
     -c | --commit | c | commit) commit_changes "$(dirname "$2")" ;;
