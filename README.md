@@ -145,6 +145,33 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
     └── note.md
     └── todo.md
 ```
+## Configuration
+
+You can further configure `tdo` by either defining environment variables or via a `tdorc` file.
+
+### Using environment variables
+
+You can set the following (optional) environment variables:
+
+- `TIMESTAMP_ENTRY` (`["true"|"false"]` defaults to `"true"`): Whether to add a time stamp when using `tdo entry` or `tdo e`.
+- `TIMESTAMP_NEWNOTE` (`["true"|"false"]` defaults to `"false"`): Whether to add a time stamp when creating new notes with `tdo <note_title>`.
+- `FILE_NAME_AS_TITLE` (`["true"|"false"]` defaults to `"false"`): Whether to add the file name as title when creating new notes with `tdo <note_title>`. If `"true"`, then it adds `<note_title>` as a markdown title to the end of the new note.
+- `ENTRY_TIMESTAMP` (`[string]` defaults to `"## %a, %I:%M %p"`): can be any bash string such as a date format expression. It is ignored if `TIMESTAMP_ENTRY` is set to `"false"`.
+- `NOTE_TIMESTAMP`(`[string]` defaults to `"## %a. %b %d, %Y - %I:%M%p"`): can be any bash string such as a date format expression. It is ignored if `TIMESTAMP_NEWNOTE` is set to `"false"`.
+
+### Using a `tdorc` file
+
+Alternatively, it is possible to define the same variables in a `$HOME/.config/tdorc` file following bash syntax. For example:
+
+```bash
+TIMESTAMP_ENTRY=false
+TIMESTAMP_NEWNOTE=true
+FILE_NAME_AS_TITLE=true
+ENTRY_TIMESTAMP="## %I:%M %p"
+NOTE_TIMESTAMP="## Created: %a. %b %d, %Y at %I:%M%p"
+```
+
+**Note** that if any of these variables are set as environment variables, then the `tdorc` will be ignored completely. That is, it is not possible to use both environment variables configuration together with a `tdorc` configuration.
 
 ## 🏗️ What's Next
 
