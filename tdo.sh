@@ -133,9 +133,9 @@ create_file() {
 
 add_timestamp() {
     file_path="$1"
-    time_format="${2:-%a, %I:%M %p}"
+    time_format="${2:-## %a, %I:%M %p}"
     timestamp=$(date +"$time_format")
-    echo -e "\n## $timestamp\n" >>"$file_path"
+    echo -e "\n$timestamp\n" >>"$file_path"
 }
 
 write_file() {
@@ -192,7 +192,7 @@ new_note() {
     create_file "$note_file" "$template"
     if [ "$new_file" = "true" ]; then
       [ "$(validate_and_set "${FILE_NAME_AS_TITLE}" false)" = "true" ] && echo -e "# $1" >>"$note_file"
-      [ "$(validate_and_set "${TIMESTAMP_NEWNOTE}" false)" = "true" ] && add_timestamp "$note_file" "${NOTE_TIMESTAMP:-}"
+      [ "$(validate_and_set "${TIMESTAMP_NEWNOTE}" false)" = "true" ] && add_timestamp "$note_file" "${NOTE_TIMESTAMP:-"## %a. %b %d, %Y - %I:%M%p"}"
     fi
     write_file "$note_file" "$root"
 }
