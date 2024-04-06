@@ -131,7 +131,7 @@ find_note() {
 pending_todos() {
     local todo_cmd=''
     if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
-        todo_cmd='+"/[\ \]" +"norm! n"'
+        todo_cmd='+"/ ]" +"norm! n"'
     fi
     local editor="$EDITOR $todo_cmd"
 
