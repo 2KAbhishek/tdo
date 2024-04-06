@@ -43,33 +43,6 @@ For more information, visit https://github.com/2kabhishek/tdo
 EOF
 }
 
-config_setup() {
-    # List of variable names to check
-    local env_vars=("TIMESTAMP_ENTRY" "TIMESTAMP_NEWNOTE" "ENTRY_TIMESTAMP" "NOTE_TIMESTAMP" "FILE_NAME_AS_TITLE")
-
-    # Check if any of the variables are set as environment variables
-    local env_variables_set=false
-    for var in "${env_vars[@]}"; do
-        if [ ! -z "${!var}" ]; then
-            env_variables_set=true
-            break
-        fi
-    done
-
-    # Function to source the configuration file if it exists
-    source_config_file() {
-        local config_file="$HOME/.config/tdorc"
-        if [ -f "$config_file" ]; then
-            source "$config_file"
-        fi
-    }
-
-    # If none of the variables are set as environment variables, source the config file
-    if [ "$env_variables_set" = false ]; then
-        source_config_file
-    fi
-}
-
 # validate whether a variable is set to true or false, and set to default otherwise
 validate_and_set() {
     local default_val="${2:-true}"
@@ -78,6 +51,17 @@ validate_and_set() {
         var_value=$default_val
     fi
     echo "$var_value"
+}
+
+# setup config variables
+config_setup() {
+  source $HOME/.config/tdorc
+
+  add_entry_timestamp="$(validate_and_set "${ADD_ENTRY_TIMESTAMP}" "true")"
+  add_new_note_timestamp="$(validate_and_set "${ADD_NEWNOTE_TIMESTAMP}" "false")"
+  filename_as_title="$(validate_and_set "${FILE_NAME_AS_TITLE}" "false")"
+  entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
+  note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
 }
 
 check_command() {
@@ -191,8 +175,8 @@ new_note() {
     [ ! -f "$note_file" ] && new_file="true" || new_file="false"
     create_file "$note_file" "$template"
     if [ "$new_file" = "true" ]; then
-      [ "$(validate_and_set "${FILE_NAME_AS_TITLE}" false)" = "true" ] && echo -e "# $1" >>"$note_file"
-      [ "$(validate_and_set "${TIMESTAMP_NEWNOTE}" false)" = "true" ] && add_timestamp "$note_file" "${NOTE_TIMESTAMP:-"## %a. %b %d, %Y - %I:%M%p"}"
+      [ $filename_as_title = "true" ] && echo -e "# $1" >>"$note_file"
+      [ $add_new_note_timestamp = "true" ] && add_timestamp "$note_file" "$note_timestamp_format"
     fi
     write_file "$note_file" "$root"
 }
@@ -215,7 +199,7 @@ new_entry() {
     entry_file="$root/entries/$(generate_file_path "$1")"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
-    [ "$(validate_and_set "${TIMESTAMP_ENTRY}")" = "true" ] && add_timestamp "$entry_file" "${ENTRY_TIMESTAMP:-}"
+    [ $add_entry_timestamp = "true" ] && add_timestamp "$entry_file" "$entry_timestamp_format"
     write_file "$entry_file" "$root"
 }
 
