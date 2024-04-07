@@ -147,31 +147,26 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 ```
 ## Configuration
 
-You can further configure `tdo` by either defining environment variables or via a `tdorc` file.
+You can configure `tdo` by either defining environment variables or via a `$HOME/.config/tdorc` file.
 
-### Using environment variables
+> configs defined in `tdorc` will override corresponding environment variables
 
-You can set the following (optional) environment variables:
+- `ADD_ENTRY_TIMESTAMP` `[boolean]`: Whether to add a time stamp when using `tdo entry` or `tdo e`.
+- `ADD_NEW_NOTE_TIMESTAMP` `[boolean]`: Whether to add a time stamp when creating new notes with `tdo <note_title>`.
+- `FILE_NAME_AS_TITLE` `[boolean]`: Whether to add the file name as title when creating new notes with `tdo <note_title>`. If `true`, then it adds `<note_title>` as a markdown title in the first line of the new note.
+- `ENTRY_TIMESTAMP_FORMAT` `[string]`: can be any bash string such as a date format expression. It is ignored if `ADD_ENTRY_TIMESTAMP` is set to `false`.
+- `NOTE_TIMESTAMP_FORMAT`(`[string]`: can be any bash string such as a date format expression. It is ignored if `ADD_NEW_NOTE_TIMESTAMP` is set to `false`.
 
-- `ADD_ENTRY_TIMESTAMP` (`[boolean]` defaults to `true`): Whether to add a time stamp when using `tdo entry` or `tdo e`.
-- `ADD_NEWNOTE_TIMESTAMP` (`[boolean]` defaults to `false`): Whether to add a time stamp when creating new notes with `tdo <note_title>`.
-- `FILE_NAME_AS_TITLE` (`[boolean]` defaults to `false`): Whether to add the file name as title when creating new notes with `tdo <note_title>`. If `true`, then it adds `<note_title>` as a markdown title in the first line of the new note.
-- `ENTRY_TIMESTAMP_FORMAT` (`[string]` defaults to `"## %a, %I:%M %p"` or `"## Mon, 12:00 PM"`): can be any bash string such as a date format expression. It is ignored if `ADD_ENTRY_TIMESTAMP` is set to `false`.
-- `NOTE_TIMESTAMP_FORMAT`(`[string]` defaults to `"## %a. %b %d, %Y - %I:%M %p"` or `"## Fri. Apr 06, 2024 - 06:48 PM"`): can be any bash string such as a date format expression. It is ignored if `ADD_NEWNOTE_TIMESTAMP` is set to `false`.
-
-### Using a `tdorc` file
-
-Alternatively, it is possible to define the same variables in a `$HOME/.config/tdorc` file following bash syntax. For example:
+### Default Configs
 
 ```bash
-ADD_ENTRY_TIMESTAMP=false
-ADD_NEWNOTE_TIMESTAMP=true
-FILE_NAME_AS_TITLE=true
-ENTRY_TIMESTAMP_FORMAT="## %I:%M %p"
-NOTE_TIMESTAMP_FORMAT="## Created: %a. %b %d, %Y at %I:%M %p"
-```
-
-**Note** that variables defined in `tdorc` will override the corresponding environment variables.
+ADD_ENTRY_TIMESTAMP=true
+ADD_NEW_NOTE_TIMESTAMP=false
+FILE_NAME_AS_TITLE=false
+# Reads ## Mon, 12:00 PM
+ENTRY_TIMESTAMP_FORMAT="## %a, %I:%M %p"
+# Reads ## Fri. Apr 06, 2024 - 06:48 PM
+NOTE_TIMESTAMP_FORMAT="## %a. %b %d, %Y - %I:%M %p"
 
 ## 🏗️ What's Next
 
