@@ -48,7 +48,7 @@ config_setup() {
   source $HOME/.config/tdorc
 
   add_entry_timestamp="${ADD_ENTRY_TIMESTAMP:-true}"
-  add_new_note_timestamp="${ADD_NEWNOTE_TIMESTAMP:-false}"
+  add_new_note_timestamp="${ADD_NEW_NOTE_TIMESTAMP:-false}"
   filename_as_title="${FILE_NAME_AS_TITLE:-false}"
   entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
   note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
