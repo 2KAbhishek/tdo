@@ -43,7 +43,6 @@ For more information, visit https://github.com/2kabhishek/tdo
 EOF
 }
 
-# setup config variables
 config_setup() {
   source $HOME/.config/tdorc
 
