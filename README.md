@@ -43,7 +43,7 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 
 ## ⚡ Setup
 
-### ⚙️ Requirements
+### 📋 Requirements
 
 - ripgrep, fzf
 - bat (optional, for syntax highlighting in search)
@@ -145,6 +145,30 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
     └── note.md
     └── todo.md
 ```
+
+### ⚙️ Configuration
+
+You can configure `tdo` by either defining environment variables or via a `$HOME/.config/tdorc` file.
+
+- `ADD_ENTRY_TIMESTAMP` `[boolean]`: Whether to add a time stamp when using `tdo entry` or `tdo e`.
+- `ADD_NEW_NOTE_TIMESTAMP` `[boolean]`: Whether to add a time stamp when creating new notes with `tdo <note_title>`.
+- `FILE_NAME_AS_TITLE` `[boolean]`: Whether to add the file name as title when creating new notes with `tdo <note_title>`. If `true`, then it adds `<note_title>` as a markdown title in the first line of the new note.
+- `ENTRY_TIMESTAMP_FORMAT` `[string]`: can be any bash string such as a date format expression. It is ignored if `ADD_ENTRY_TIMESTAMP` is set to `false`.
+- `NOTE_TIMESTAMP_FORMAT`(`[string]`: can be any bash string such as a date format expression. It is ignored if `ADD_NEW_NOTE_TIMESTAMP` is set to `false`.
+
+#### Default Configs
+
+```bash
+ADD_ENTRY_TIMESTAMP=true
+ADD_NEW_NOTE_TIMESTAMP=false
+FILE_NAME_AS_TITLE=false
+# Reads ## Mon, 12:00 PM
+ENTRY_TIMESTAMP_FORMAT="## %a, %I:%M %p"
+# Reads ## Fri. Apr 06, 2024 - 06:48 PM
+NOTE_TIMESTAMP_FORMAT="## %a. %b %d, %Y - %I:%M %p"
+```
+
+> configs defined in `tdorc` will override corresponding environment variables
 
 ## 🏗️ What's Next
 

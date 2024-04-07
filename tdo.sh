@@ -43,6 +43,16 @@ For more information, visit https://github.com/2kabhishek/tdo
 EOF
 }
 
+config_setup() {
+  source $HOME/.config/tdorc
+
+  add_entry_timestamp="${ADD_ENTRY_TIMESTAMP:-true}"
+  add_new_note_timestamp="${ADD_NEW_NOTE_TIMESTAMP:-false}"
+  filename_as_title="${FILE_NAME_AS_TITLE:-false}"
+  entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
+  note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
+}
+
 check_command() {
     if ! command -v "$1" &>/dev/null; then
         echo "Error: The $1 command is not available. Make sure it is installed."
@@ -96,9 +106,9 @@ create_file() {
 
 add_timestamp() {
     file_path="$1"
-    time_format="${2:-%a, %I:%M %p}"
+    time_format="${2:-## %a, %I:%M %p}"
     timestamp=$(date +"$time_format")
-    echo -e "\n## $timestamp\n" >>"$file_path"
+    echo -e "\n$timestamp\n" >>"$file_path"
 }
 
 write_file() {
@@ -151,7 +161,11 @@ new_note() {
     root="$NOTES_DIR"
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
-    create_file "$note_file" "$template"
+    if [ ! -f "$note_file" ]; then
+      create_file "$note_file" "$template"
+      $filename_as_title && echo -e "# $1" >>"$note_file"
+      $add_new_note_timestamp && add_timestamp "$note_file" "$note_timestamp_format"
+    fi
     write_file "$note_file" "$root"
 }
 
@@ -173,7 +187,7 @@ new_entry() {
     entry_file="$root/entries/$(generate_file_path "$1")"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
-    add_timestamp "$entry_file"
+    $add_entry_timestamp && add_timestamp "$entry_file" "$entry_timestamp_format"
     write_file "$entry_file" "$root"
 }
 
@@ -181,6 +195,7 @@ main() {
     check_command "rg"
     check_command "fzf"
     check_env "NOTES_DIR"
+    config_setup
 
     case "$1" in
     -c | --commit | c | commit) commit_changes "$(dirname "$2")" ;;
