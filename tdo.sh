@@ -43,23 +43,13 @@ For more information, visit https://github.com/2kabhishek/tdo
 EOF
 }
 
-# validate whether a variable is set to true or false, and set to default otherwise
-validate_and_set() {
-    local default_val="${2:-true}"
-    local var_value="${1:-$default_val}"
-    if [[ "$var_value" != "true" && "$var_value" != "false" ]]; then
-        var_value=$default_val
-    fi
-    echo "$var_value"
-}
-
 # setup config variables
 config_setup() {
   source $HOME/.config/tdorc
 
-  add_entry_timestamp="$(validate_and_set "${ADD_ENTRY_TIMESTAMP}" "true")"
-  add_new_note_timestamp="$(validate_and_set "${ADD_NEWNOTE_TIMESTAMP}" "false")"
-  filename_as_title="$(validate_and_set "${FILE_NAME_AS_TITLE}" "false")"
+  add_entry_timestamp="${ADD_ENTRY_TIMESTAMP:-true}"
+  add_new_note_timestamp="${ADD_NEWNOTE_TIMESTAMP:-false}"
+  filename_as_title="${FILE_NAME_AS_TITLE:-false}"
   entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
   note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
 }
@@ -172,11 +162,10 @@ new_note() {
     root="$NOTES_DIR"
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
-    [ ! -f "$note_file" ] && new_file="true" || new_file="false"
-    create_file "$note_file" "$template"
-    if [ "$new_file" = "true" ]; then
-      [ $filename_as_title = "true" ] && echo -e "# $1" >>"$note_file"
-      [ $add_new_note_timestamp = "true" ] && add_timestamp "$note_file" "$note_timestamp_format"
+    if [ ! -f "$note_file" ]; then
+      create_file "$note_file" "$template"
+      $filename_as_title && echo -e "# $1" >>"$note_file"
+      $add_new_note_timestamp && add_timestamp "$note_file" "$note_timestamp_format"
     fi
     write_file "$note_file" "$root"
 }
@@ -199,7 +188,7 @@ new_entry() {
     entry_file="$root/entries/$(generate_file_path "$1")"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
-    [ $add_entry_timestamp = "true" ] && add_timestamp "$entry_file" "$entry_timestamp_format"
+    $add_entry_timestamp && add_timestamp "$entry_file" "$entry_timestamp_format"
     write_file "$entry_file" "$root"
 }
 
