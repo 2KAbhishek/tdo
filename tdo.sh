@@ -44,13 +44,13 @@ EOF
 }
 
 config_setup() {
-  source $HOME/.config/tdorc
-
-  add_entry_timestamp="${ADD_ENTRY_TIMESTAMP:-true}"
-  add_new_note_timestamp="${ADD_NEW_NOTE_TIMESTAMP:-false}"
-  filename_as_title="${FILE_NAME_AS_TITLE:-false}"
-  entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
-  note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
+    local config_file="$HOME/.config/tdorc"
+    [ -f "$config_file" ] && source "$config_file"
+    add_entry_timestamp="${ADD_ENTRY_TIMESTAMP:-true}"
+    add_new_note_timestamp="${ADD_NEW_NOTE_TIMESTAMP:-false}"
+    filename_as_title="${FILE_NAME_AS_TITLE:-false}"
+    entry_timestamp_format="${ENTRY_TIMESTAMP_FORMAT:-"## %a, %I:%M %p"}"
+    note_timestamp_format="${NOTE_TIMESTAMP_FORMAT:-"## %a. %b %d, %Y - %I:%M %p"}"
 }
 
 check_command() {
@@ -162,9 +162,9 @@ new_note() {
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
     if [ ! -f "$note_file" ]; then
-      create_file "$note_file" "$template"
-      $filename_as_title && echo -e "# $1" >>"$note_file"
-      $add_new_note_timestamp && add_timestamp "$note_file" "$note_timestamp_format"
+        create_file "$note_file" "$template"
+        $filename_as_title && echo -e "# $1" >>"$note_file"
+        $add_new_note_timestamp && add_timestamp "$note_file" "$note_timestamp_format"
     fi
     write_file "$note_file" "$root"
 }
