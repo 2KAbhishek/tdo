@@ -129,7 +129,7 @@ find_note() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        rg -li --sort path "$1" |
+        rg -li --sort path "$1" | sort |
             fzf --bind "enter:execute($EDITOR {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
         commit_changes
@@ -149,7 +149,7 @@ pending_todos() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        rg -l --glob '!/templates/*' '\[ \]' |
+        rg -l --glob '!/templates/*' '\[ \]' | sort |
             fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
     else
