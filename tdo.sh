@@ -117,7 +117,7 @@ write_file() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        $EDITOR "$file_path"
+        "$EDITOR" "$file_path"
         commit_changes "$(dirname "$file_path")"
     else
         echo "$file_path" && exit 0
@@ -191,6 +191,33 @@ new_entry() {
     write_file "$entry_file" "$root"
 }
 
+find_or_create_note() {
+    root="$NOTES_DIR"
+    note_file="$root/notes/$1.md"
+    template="$root/templates/note.md"
+    notes=$(find "$root" -type f -not -path '*/\.*' -iname "*$1*")
+
+    if [ -z "$notes" ]; then
+        new_note "$1"
+    else
+        if $INTERACTIVE; then
+            cd "$root" || return
+            if [ "$(echo "$notes" | wc -l)" -eq 1 ]; then
+                $EDITOR "$notes"
+            else
+                find "$root" -type f -not -path '*/\.*' -iname "*$1*" | sed "s|^$PWD/||" | sort |
+                    fzf --bind "enter:execute($EDITOR {})" \
+                        --bind "ctrl-n:execute(cp $template $note_file && $EDITOR $note_file)" \
+                        --header "Ctrl-n: Create '$1.md'" \
+                        --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
+            fi
+            commit_changes
+        else
+            echo "$notes"
+        fi
+    fi
+}
+
 main() {
     check_command "rg"
     check_command "fzf"
@@ -205,7 +232,7 @@ main() {
     -n | --note | n | note) draft_note ;;
     -t | --todo | t | todo) pending_todos ;;
     "" | [0-9-]*) new_todo "$1" ;;
-    *) new_note "$1" ;;
+    *) find_or_create_note "$1" ;;
     esac
 }
 
