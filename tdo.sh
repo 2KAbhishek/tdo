@@ -127,10 +127,16 @@ write_file() {
 find_note() {
     root="$NOTES_DIR"
 
+    local todo_cmd=''
+    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
+        todo_cmd="+'/$1' +'norm! n'"
+    fi
+    local editor="$EDITOR $todo_cmd"
+
     if $INTERACTIVE; then
         cd "$root" || return
         rg -li --sort path "$1" | sort |
-            fzf --bind "enter:execute($EDITOR {})" \
+            fzf --bind "enter:execute($editor {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
         commit_changes
     else
@@ -141,7 +147,7 @@ find_note() {
 pending_todos() {
     local todo_cmd=''
     if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
-        todo_cmd='+"/ ]" +"norm! n"'
+        todo_cmd="+'/ ]' +'norm! n'"
     fi
     local editor="$EDITOR $todo_cmd"
 
