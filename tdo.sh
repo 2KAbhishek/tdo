@@ -128,7 +128,7 @@ find_note() {
     root="$NOTES_DIR"
 
     local todo_cmd=''
-    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
+    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ] && [ -n "$1" ]; then
         todo_cmd="+'/$1' +'norm! n'"
     fi
     local editor="$EDITOR $todo_cmd"
