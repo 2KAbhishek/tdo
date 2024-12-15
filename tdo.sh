@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 INTERACTIVE=false
 if [ -t 1 ]; then
