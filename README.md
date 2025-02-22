@@ -84,6 +84,16 @@ cp -irv templates $NOTES_DIR
 source ~/.zshrc
 ```
 
+#### 🔤 Shell Completion
+
+If you want to enable tab completion for `tdo`, add this to your shell's RC file (~/.bashrc, ~/.zshrc):
+
+```bash
+source /path/to/tdo/completions/tdo_completion.sh
+```
+
+This will allow you to use tab completion to quickly access your notes when you type `tdo <tab>`.
+
 #### 💾 Git Integration
 
 If you want to sync your notes across devices, you can set up a git repo on the $NOTES_DIR and add GitHub/GitLab as remote.
