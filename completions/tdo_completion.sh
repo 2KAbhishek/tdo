@@ -4,8 +4,9 @@ _tdo_completions() {
     local cur opts
     COMPREPLY=()
     cur="${COMP_WORDS[COMP_CWORD]}"
-    opts=$(find "$NOTES_DIR" -mindepth 1 -not -path '*/\.*' | sed "s|^$NOTES_DIR/||")
+    opts=$(find "$NOTES_DIR" -mindepth 1 -not -path '*/\.*' | sed "s|^$NOTES_DIR/||" | sort)
 
+    local IFS=$'\n'
     COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
     return 0
 }
