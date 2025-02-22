@@ -86,10 +86,13 @@ source ~/.zshrc
 
 #### 🔤 Shell Completion
 
-If you want to enable tab completion for `tdo`, add this to your shell's RC file (~/.bashrc, ~/.zshrc):
+If you want to enable tab completion for `tdo`, add this to your shell's RC file (bashrc, zshrc, config.fish etc).
 
 ```bash
+# zsh and bash
 source /path/to/tdo/completions/tdo_completion.sh
+# fish
+source /path/to/tdo/completions/tdo_completion.fish
 ```
 
 This will allow you to use tab completion to quickly access your notes when you type `tdo <tab>`.
