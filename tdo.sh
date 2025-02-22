@@ -199,6 +199,12 @@ new_entry() {
 
 find_or_create_note() {
     root="$NOTES_DIR"
+
+    if [ -f "$root/$1" ]; then
+        write_file "$root/$1" "$root"
+        return
+    fi
+
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
     notes=$(find "$root" -type f -not -path '*/\.*' -iname "*$1*")
