@@ -125,9 +125,10 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
 - `tdo todo` or `tdo t` to show all your pending todos
+- `tdo pending` or `tdo p` will show count of pending todos
 - `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, needed for plugins and integrations
 
-> Run `tdo h` to get help info on the command line
+> Run `tdo h` to get more help info on the command line
 
 ### 📁 Dir Structure
 
