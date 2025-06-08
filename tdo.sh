@@ -17,6 +17,7 @@ Commands:
 -f | --find   | f | find    searches for argument term in notes
 -n | --note   | n | note    creates a new draft note with timestamp title
 -t | --todo   | t | todo    shows all pending todos
+-p | --pending| p | pending shows the count of pending todos
 -h | --help   | h | help    shows this help message
 
 Example:
@@ -38,6 +39,8 @@ tdo f neovim
 tdo f
 # show all pending todos
 tdo t
+# show count of pending todos
+tdo p
 
 For more information, visit https://github.com/2kabhishek/tdo
 EOF
@@ -144,6 +147,12 @@ find_note() {
     fi
 }
 
+count_pending_todos() {
+    root="${TODOS_DIR:-$NOTES_DIR}"
+    count=$(rg --count-matches --no-filename --glob '!/templates/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
+    echo "${count}"
+}
+
 pending_todos() {
     local todo_cmd=''
     if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
@@ -243,6 +252,7 @@ main() {
     -h | --help | h | help) display_help ;;
     -n | --note | n | note) draft_note ;;
     -t | --todo | t | todo) pending_todos ;;
+    -p | --pending | p | pending) count_pending_todos ;;
     "" | [0-9-]*) new_todo "$1" ;;
     *) find_or_create_note "$1" ;;
     esac
