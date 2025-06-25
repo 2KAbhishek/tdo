@@ -40,6 +40,7 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 - Has interactive fuzzy searching capabilities powered by fzf
 - Can integrate with other tools in pipes and subshells for extended functionality
 - Supports all editors, set `$EDITOR` to your choice
+- Integrates with AI agents and workflows with MCP, provided by [mcp-tdo](https://github.com/2kabhishek/mcp-tdo)
 
 ## ⚡ Setup
 
