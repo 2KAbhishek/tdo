@@ -29,13 +29,13 @@ tdo tomorrow
 # open monday's todo from this week
 tdo monday
 # open next monday's todo (next week)
-tdo next_monday
+tdo next-monday
 # open last monday's todo (previous week)
-tdo prev_monday
+tdo last-monday
 # open todo from 2 weeks ago
-tdo 2_weeks_ago
+tdo 2-weeks-ago
 # open last year's todo
-tdo last_year
+tdo last-year
 # open or create the note tech/vim.md
 tdo tech/vim
 # creates a new draft note
@@ -47,7 +47,7 @@ tdo e -2
 # open tuesday's journal entry from this week
 tdo e tuesday
 # open previous tuesday's journal entry
-tdo e prev_tuesday
+tdo e last-tuesday
 # search for neovim in all notes
 tdo f neovim
 # review all notes
@@ -143,52 +143,52 @@ parse_natural_date() {
     "friday" | "fri") echo $(days_to_weekday 5) ;;
     "saturday" | "sat") echo $(days_to_weekday 6) ;;
 
-    "next_sunday" | "next_sun") echo $(($(days_to_weekday 0) + 7)) ;;
-    "next_monday" | "next_mon") echo $(($(days_to_weekday 1) + 7)) ;;
-    "next_tuesday" | "next_tue") echo $(($(days_to_weekday 2) + 7)) ;;
-    "next_wednesday" | "next_wed") echo $(($(days_to_weekday 3) + 7)) ;;
-    "next_thursday" | "next_thu") echo $(($(days_to_weekday 4) + 7)) ;;
-    "next_friday" | "next_fri") echo $(($(days_to_weekday 5) + 7)) ;;
-    "next_saturday" | "next_sat") echo $(($(days_to_weekday 6) + 7)) ;;
+    "next-sunday" | "next-sun") echo $(($(days_to_weekday 0) + 7)) ;;
+    "next-monday" | "next-mon") echo $(($(days_to_weekday 1) + 7)) ;;
+    "next-tuesday" | "next-tue") echo $(($(days_to_weekday 2) + 7)) ;;
+    "next-wednesday" | "next-wed") echo $(($(days_to_weekday 3) + 7)) ;;
+    "next-thursday" | "next-thu") echo $(($(days_to_weekday 4) + 7)) ;;
+    "next-friday" | "next-fri") echo $(($(days_to_weekday 5) + 7)) ;;
+    "next-saturday" | "next-sat") echo $(($(days_to_weekday 6) + 7)) ;;
 
-    "last_sunday" | "last_sun") echo $(($(days_to_weekday 0) - 7)) ;;
-    "last_monday" | "last_mon") echo $(($(days_to_weekday 1) - 7)) ;;
-    "last_tuesday" | "last_tue") echo $(($(days_to_weekday 2) - 7)) ;;
-    "last_wednesday" | "last_wed") echo $(($(days_to_weekday 3) - 7)) ;;
-    "last_thursday" | "last_thu") echo $(($(days_to_weekday 4) - 7)) ;;
-    "last_friday" | "last_fri") echo $(($(days_to_weekday 5) - 7)) ;;
-    "last_saturday" | "last_sat") echo $(($(days_to_weekday 6) - 7)) ;;
+    "last-sunday" | "last-sun") echo $(($(days_to_weekday 0) - 7)) ;;
+    "last-monday" | "last-mon") echo $(($(days_to_weekday 1) - 7)) ;;
+    "last-tuesday" | "last-tue") echo $(($(days_to_weekday 2) - 7)) ;;
+    "last-wednesday" | "last-wed") echo $(($(days_to_weekday 3) - 7)) ;;
+    "last-thursday" | "last-thu") echo $(($(days_to_weekday 4) - 7)) ;;
+    "last-friday" | "last-fri") echo $(($(days_to_weekday 5) - 7)) ;;
+    "last-saturday" | "last-sat") echo $(($(days_to_weekday 6) - 7)) ;;
 
-    "next_week") echo "7" ;;
-    "last_week") echo "-7" ;;
-    "next_month") echo "30" ;;
-    "last_month") echo "-30" ;;
-    "last_year") echo "-365" ;;
-    "next_year") echo "365" ;;
+    "next-week") echo "7" ;;
+    "last-week") echo "-7" ;;
+    "next-month") echo "30" ;;
+    "last-month") echo "-30" ;;
+    "last-year") echo "-365" ;;
+    "next-year") echo "365" ;;
 
     # Programmatic patterns (handle both singular and plural)
-    [0-9]*_week_from_now | [0-9]*_weeks_from_now)
-        local weeks="${lower_input%_week*_from_now}"
+    [0-9]*-week-from-now | [0-9]*-weeks-from-now)
+        local weeks="${lower_input%-week*-from-now}"
         [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * 7))
         ;;
-    [0-9]*_week_ago | [0-9]*_weeks_ago)
-        local weeks="${lower_input%_week*_ago}"
+    [0-9]*-week-ago | [0-9]*-weeks-ago)
+        local weeks="${lower_input%-week*-ago}"
         [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * -7))
         ;;
-    [0-9]*_month_from_now | [0-9]*_months_from_now)
-        local months="${lower_input%_month*_from_now}"
+    [0-9]*-month-from-now | [0-9]*-months-from-now)
+        local months="${lower_input%-month*-from-now}"
         [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "+"
         ;;
-    [0-9]*_month_ago | [0-9]*_months_ago)
-        local months="${lower_input%_month*_ago}"
+    [0-9]*-month-ago | [0-9]*-months-ago)
+        local months="${lower_input%-month*-ago}"
         [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "-"
         ;;
-    [0-9]*_year_from_now | [0-9]*_years_from_now)
-        local years="${lower_input%_year*_from_now}"
+    [0-9]*-year-from-now | [0-9]*-years-from-now)
+        local years="${lower_input%-year*-from-now}"
         [[ "$years" =~ ^[0-9]+$ ]] && calculate_date_offset "$years" "years" "+"
         ;;
-    [0-9]*_year_ago | [0-9]*_years_ago)
-        local years="${lower_input%_year*_ago}"
+    [0-9]*-year-ago | [0-9]*-years-ago)
+        local years="${lower_input%-year*-ago}"
         [[ "$years" =~ ^[0-9]+$ ]] && calculate_date_offset "$years" "years" "-"
         ;;
 
@@ -386,7 +386,7 @@ main() {
     -n | --note | n | note) draft_note ;;
     -t | --todo | t | todo) pending_todos ;;
     -p | --pending | p | pending) count_pending_todos ;;
-    "" | [0-9-]* | *day* | *week* | *month* | *year* | *sun | *mon | *tue | *wed | *thu | *fri | *sat | next_* | last_* | tomorrow) new_todo "$1" ;;
+    "" | [0-9-]* | *day* | *week* | *month* | *year* | *sun | *mon | *tue | *wed | *thu | *fri | *sat | next-* | last-* | tomorrow) new_todo "$1" ;;
     *) find_or_create_note "$1" ;;
     esac
 }
