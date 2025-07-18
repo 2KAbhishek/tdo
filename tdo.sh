@@ -211,9 +211,15 @@ generate_file_path() {
     fi
 
     date_cmd=$(get_date_command)
-    year=$($date_cmd -d "$offset days" +'%Y')
-    month=$($date_cmd -d "$offset days" +'%m')
-    day=$($date_cmd -d "$offset days" +'%d')
+    if [[ "$offset" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then
+        year=$($date_cmd -d "$offset" +'%Y')
+        month=$($date_cmd -d "$offset" +'%m')
+        day=$($date_cmd -d "$offset" +'%d')
+    else
+        year=$($date_cmd -d "$offset days" +'%Y')
+        month=$($date_cmd -d "$offset days" +'%m')
+        day=$($date_cmd -d "$offset days" +'%d')
+    fi
     file_name="${year}-${month}-${day}.md"
     echo "$year/$month/$file_name"
 }
