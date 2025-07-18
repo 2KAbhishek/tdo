@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ripgrep fzf bat coreutils
+
+      - name: Install bats-core
+        run: |
+          git clone https://github.com/bats-core/bats-core.git
+          cd bats-core
+          sudo ./install.sh /usr/local
+
+      - name: Set up test environment
+        run: |
+          export NOTES_DIR="$HOME/test_notes"
+          mkdir -p "$NOTES_DIR"
+          echo "NOTES_DIR=$NOTES_DIR" >> $GITHUB_ENV
+
+      - name: Run unit tests
+        run: |
+          echo "Running unit tests..."
+          bats --print-output-on-failure tests/unit/
+
+      - name: Run integration tests
+        run: |
+          echo "Running integration tests..."
+          bats --print-output-on-failure tests/integration/
+
+  test-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          brew install ripgrep fzf bat coreutils bats-core
+
+      - name: Set up test environment
+        run: |
+          export NOTES_DIR="$HOME/test_notes"
+          mkdir -p "$NOTES_DIR"
+          echo "NOTES_DIR=$NOTES_DIR" >> $GITHUB_ENV
+
+      - name: Run tests on macOS
+        run: |
+          echo "Running all tests on macOS..."
+          bats --print-output-on-failure tests/unit/ tests/integration/
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Lint shell script
+        continue-on-error: true # Allow warnings but still show them
+        run: |
+          echo "Linting main script..."
+          shellcheck tdo.sh || echo "Main script has shellcheck warnings"
+          echo "Linting test helper..."
+          shellcheck tests/test_helper.bash || echo "Test helper has shellcheck warnings"
+          echo "Shellcheck completed"
