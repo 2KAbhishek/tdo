@@ -115,6 +115,17 @@ days_to_weekday() {
     echo $((target_day - current_day))
 }
 
+calculate_date_offset() {
+    local value="$1"
+    local unit="$2" # "months" or "years"
+    local sign="$3" # "+" or "-"
+
+    local date_cmd=$(get_date_command)
+    local target_date=$($date_cmd -d "${sign}${value} ${unit}" +'%Y-%m-%d')
+    local current_date=$($date_cmd +'%Y-%m-%d')
+    echo $((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
+}
+
 parse_natural_date() {
     local input="$1"
     local lower_input=$(echo "$input" | tr '[:upper:]' '[:lower:]')
@@ -158,67 +169,27 @@ parse_natural_date() {
     # Programmatic patterns (handle both singular and plural)
     [0-9]*_week_from_now | [0-9]*_weeks_from_now)
         local weeks="${lower_input%_week*_from_now}"
-        if [[ "$weeks" =~ ^[0-9]+$ ]]; then
-            echo $((weeks * 7))
-        else
-            echo "$input"
-        fi
+        [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * 7))
         ;;
     [0-9]*_week_ago | [0-9]*_weeks_ago)
         local weeks="${lower_input%_week*_ago}"
-        if [[ "$weeks" =~ ^[0-9]+$ ]]; then
-            echo $((weeks * -7))
-        else
-            echo "$input"
-        fi
+        [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * -7))
         ;;
     [0-9]*_month_from_now | [0-9]*_months_from_now)
         local months="${lower_input%_month*_from_now}"
-        if [[ "$months" =~ ^[0-9]+$ ]]; then
-            local date_cmd=$(get_date_command)
-            local target_date=$($date_cmd -d "+$months months" +'%Y-%m-%d')
-            local current_date=$($date_cmd +'%Y-%m-%d')
-            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
-            echo "$days_diff"
-        else
-            echo "$input"
-        fi
+        [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "+"
         ;;
     [0-9]*_month_ago | [0-9]*_months_ago)
         local months="${lower_input%_month*_ago}"
-        if [[ "$months" =~ ^[0-9]+$ ]]; then
-            local date_cmd=$(get_date_command)
-            local target_date=$($date_cmd -d "-$months months" +'%Y-%m-%d')
-            local current_date=$($date_cmd +'%Y-%m-%d')
-            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
-            echo "$days_diff"
-        else
-            echo "$input"
-        fi
+        [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "-"
         ;;
     [0-9]*_year_from_now | [0-9]*_years_from_now)
         local years="${lower_input%_year*_from_now}"
-        if [[ "$years" =~ ^[0-9]+$ ]]; then
-            local date_cmd=$(get_date_command)
-            local target_date=$($date_cmd -d "+$years years" +'%Y-%m-%d')
-            local current_date=$($date_cmd +'%Y-%m-%d')
-            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
-            echo "$days_diff"
-        else
-            echo "$input"
-        fi
+        [[ "$years" =~ ^[0-9]+$ ]] && calculate_date_offset "$years" "years" "+"
         ;;
     [0-9]*_year_ago | [0-9]*_years_ago)
         local years="${lower_input%_year*_ago}"
-        if [[ "$years" =~ ^[0-9]+$ ]]; then
-            local date_cmd=$(get_date_command)
-            local target_date=$($date_cmd -d "-$years years" +'%Y-%m-%d')
-            local current_date=$($date_cmd +'%Y-%m-%d')
-            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
-            echo "$days_diff"
-        else
-            echo "$input"
-        fi
+        [[ "$years" =~ ^[0-9]+$ ]] && calculate_date_offset "$years" "years" "-"
         ;;
 
     *) echo "$input" ;;
