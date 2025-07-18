@@ -21,41 +21,14 @@ Commands:
 -h | --help   | h | help    shows this help message
 
 Example:
-# open today's todo
-tdo
-# open tomorrow's todo
-tdo 1
-tdo tomorrow
-# open monday's todo from this week
-tdo monday
-# open next monday's todo (next week)
-tdo next-monday
-# open last monday's todo (previous week)
-tdo last-monday
-# open todo from 2 weeks ago
-tdo 2-weeks-ago
-# open last year's todo
-tdo last-year
-# open or create the note tech/vim.md
+# todos: supports date formats like numbers, tomorrow, next-week, 3-months-ago, etc.
+tdo | tdo tomorrow | tdo monday | tdo next-mon | tdo 2-weeks-ago | tdo 2025-07-14
+# journal entries: supports same date formats as todos
+tdo e 1 | tdo e tuesday | tdo e last-tuesday | tdo e 1-month-later
+# Open or create vim.md in notes/tech/ directory
 tdo tech/vim
-# creates a new draft note
-tdo n
-# open today's journal entry
-tdo e
-# open day before yesterday's journal entry
-tdo e -2
-# open tuesday's journal entry from this week
-tdo e tuesday
-# open previous tuesday's journal entry
-tdo e last-tuesday
-# search for neovim in all notes
+# search notes with neovim in them
 tdo f neovim
-# review all notes
-tdo f
-# show all pending todos
-tdo t
-# show count of pending todos
-tdo p
 
 For more information, visit https://github.com/2kabhishek/tdo
 EOF
