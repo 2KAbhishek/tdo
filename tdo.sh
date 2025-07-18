@@ -25,6 +25,17 @@ Example:
 tdo
 # open tomorrow's todo
 tdo 1
+tdo tomorrow
+# open monday's todo from this week
+tdo monday
+# open next monday's todo (next week)
+tdo next_monday
+# open last monday's todo (previous week)
+tdo prev_monday
+# open todo from 2 weeks ago
+tdo 2_weeks_ago
+# open last year's todo
+tdo last_year
 # open or create the note tech/vim.md
 tdo tech/vim
 # creates a new draft note
@@ -33,6 +44,10 @@ tdo n
 tdo e
 # open day before yesterday's journal entry
 tdo e -2
+# open tuesday's journal entry from this week
+tdo e tuesday
+# open previous tuesday's journal entry
+tdo e prev_tuesday
 # search for neovim in all notes
 tdo f neovim
 # review all notes
@@ -83,13 +98,174 @@ commit_changes() {
     cd - >/dev/null || return
 }
 
-generate_file_path() {
-    offset="${1:-0}"
-    date_cmd="date"
+get_date_command() {
     if [ "$(uname)" = "Darwin" ]; then
         check_command "gdate"
-        date_cmd="gdate"
+        echo "gdate"
+    else
+        echo "date"
     fi
+}
+
+days_until_weekday() {
+    local target_day="$1"
+    local date_cmd=$(get_date_command)
+    local current_day=$($date_cmd +%w)
+    local days_ahead=$(((target_day - current_day + 7) % 7))
+    # If target is today, go to next week
+    [ $days_ahead -eq 0 ] && days_ahead=7
+    echo $days_ahead
+}
+
+days_since_weekday() {
+    local target_day="$1"
+    local date_cmd=$(get_date_command)
+    local current_day=$($date_cmd +%w)
+    local days_back=$(((current_day - target_day + 7) % 7))
+    # If target is today, go to last week
+    [ $days_back -eq 0 ] && days_back=7
+    echo "-$days_back"
+}
+
+days_to_weekday_same_week() {
+    local target_day="$1"
+    local date_cmd=$(get_date_command)
+    local current_day=$($date_cmd +%w)
+
+    # Convert Sunday=0 to Monday=0 week format
+    # Sunday becomes 6, Monday becomes 0, Tuesday becomes 1, etc.
+    local current_day_mon_week=$(((current_day + 6) % 7))
+    local target_day_mon_week=$(((target_day + 6) % 7))
+
+    local days_diff=$((target_day_mon_week - current_day_mon_week))
+    echo "$days_diff"
+}
+
+parse_natural_date() {
+    local input="$1"
+    local lower_input=$(echo "$input" | tr '[:upper:]' '[:lower:]')
+
+    case "$lower_input" in
+    "today") echo "0" ;;
+    "tomorrow") echo "1" ;;
+    "yesterday") echo "-1" ;;
+
+    "sunday" | "sun") echo $(days_to_weekday_same_week 0) ;;
+    "monday" | "mon") echo $(days_to_weekday_same_week 1) ;;
+    "tuesday" | "tue") echo $(days_to_weekday_same_week 2) ;;
+    "wednesday" | "wed") echo $(days_to_weekday_same_week 3) ;;
+    "thursday" | "thu") echo $(days_to_weekday_same_week 4) ;;
+    "friday" | "fri") echo $(days_to_weekday_same_week 5) ;;
+    "saturday" | "sat") echo $(days_to_weekday_same_week 6) ;;
+
+    "next_sunday" | "next_sun") echo $(days_until_weekday 0) ;;
+    "next_monday" | "next_mon") echo $(days_until_weekday 1) ;;
+    "next_tuesday" | "next_tue") echo $(days_until_weekday 2) ;;
+    "next_wednesday" | "next_wed") echo $(days_until_weekday 3) ;;
+    "next_thursday" | "next_thu") echo $(days_until_weekday 4) ;;
+    "next_friday" | "next_fri") echo $(days_until_weekday 5) ;;
+    "next_saturday" | "next_sat") echo $(days_until_weekday 6) ;;
+
+    "last_sunday" | "last_sun") echo $(days_since_weekday 0) ;;
+    "last_monday" | "last_mon") echo $(days_since_weekday 1) ;;
+    "last_tuesday" | "last_tue") echo $(days_since_weekday 2) ;;
+    "last_wednesday" | "last_wed") echo $(days_since_weekday 3) ;;
+    "last_thursday" | "last_thu") echo $(days_since_weekday 4) ;;
+    "last_friday" | "last_fri") echo $(days_since_weekday 5) ;;
+    "last_saturday" | "last_sat") echo $(days_since_weekday 6) ;;
+
+    "next_week") echo "7" ;;
+    "last_week") echo "-7" ;;
+    "next_month") echo "30" ;;
+    "last_month") echo "-30" ;;
+    "last_year") echo "-365" ;;
+    "next_year") echo "365" ;;
+
+    # Programmatic patterns (handle both singular and plural)
+    [0-9]*_week_from_now | [0-9]*_weeks_from_now)
+        local weeks="${lower_input%_week*_from_now}"
+        if [[ "$weeks" =~ ^[0-9]+$ ]]; then
+            echo $((weeks * 7))
+        else
+            echo "$input"
+        fi
+        ;;
+    [0-9]*_week_ago | [0-9]*_weeks_ago)
+        local weeks="${lower_input%_week*_ago}"
+        if [[ "$weeks" =~ ^[0-9]+$ ]]; then
+            echo $((weeks * -7))
+        else
+            echo "$input"
+        fi
+        ;;
+    [0-9]*_month_from_now | [0-9]*_months_from_now)
+        local months="${lower_input%_month*_from_now}"
+        if [[ "$months" =~ ^[0-9]+$ ]]; then
+            local date_cmd=$(get_date_command)
+            local target_date=$($date_cmd -d "+$months months" +'%Y-%m-%d')
+            local current_date=$($date_cmd +'%Y-%m-%d')
+            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
+            echo "$days_diff"
+        else
+            echo "$input"
+        fi
+        ;;
+    [0-9]*_month_ago | [0-9]*_months_ago)
+        local months="${lower_input%_month*_ago}"
+        if [[ "$months" =~ ^[0-9]+$ ]]; then
+            local date_cmd=$(get_date_command)
+            local target_date=$($date_cmd -d "-$months months" +'%Y-%m-%d')
+            local current_date=$($date_cmd +'%Y-%m-%d')
+            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
+            echo "$days_diff"
+        else
+            echo "$input"
+        fi
+        ;;
+    [0-9]*_year_from_now | [0-9]*_years_from_now)
+        local years="${lower_input%_year*_from_now}"
+        if [[ "$years" =~ ^[0-9]+$ ]]; then
+            local date_cmd=$(get_date_command)
+            local target_date=$($date_cmd -d "+$years years" +'%Y-%m-%d')
+            local current_date=$($date_cmd +'%Y-%m-%d')
+            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
+            echo "$days_diff"
+        else
+            echo "$input"
+        fi
+        ;;
+    [0-9]*_year_ago | [0-9]*_years_ago)
+        local years="${lower_input%_year*_ago}"
+        if [[ "$years" =~ ^[0-9]+$ ]]; then
+            local date_cmd=$(get_date_command)
+            local target_date=$($date_cmd -d "-$years years" +'%Y-%m-%d')
+            local current_date=$($date_cmd +'%Y-%m-%d')
+            local days_diff=$((($($date_cmd -d "$target_date" +%s) - $($date_cmd -d "$current_date" +%s)) / 86400))
+            echo "$days_diff"
+        else
+            echo "$input"
+        fi
+        ;;
+
+    *) echo "$input" ;;
+    esac
+}
+
+generate_file_path() {
+    local input="${1:-0}"
+    local offset
+
+    offset=$(parse_natural_date "$input")
+
+    if [ "$offset" = "$input" ]; then
+        if [[ "$input" =~ ^[0-9-]+$ ]]; then
+            offset="$input"
+        else
+            return 1
+        fi
+    fi
+
+    date_cmd=$(get_date_command)
     year=$($date_cmd -d "$offset days" +'%Y')
     month=$($date_cmd -d "$offset days" +'%m')
     day=$($date_cmd -d "$offset days" +'%d')
@@ -191,7 +367,13 @@ draft_note() {
 
 new_todo() {
     root="${TODOS_DIR:-$NOTES_DIR}"
-    todo_file="$root/todos/$(generate_file_path "$1")"
+
+    if ! file_path=$(generate_file_path "$1"); then
+        find_or_create_note "$1"
+        return
+    fi
+
+    todo_file="$root/todos/$file_path"
     template="$root/templates/todo.md"
     create_file "$todo_file" "$template"
     write_file "$todo_file" "$root"
@@ -199,7 +381,13 @@ new_todo() {
 
 new_entry() {
     root="${JOURNAL_DIR:-$NOTES_DIR}"
-    entry_file="$root/entries/$(generate_file_path "$1")"
+
+    if ! file_path=$(generate_file_path "$1"); then
+        find_or_create_note "$1"
+        return
+    fi
+
+    entry_file="$root/entries/$file_path"
     template="$root/templates/entry.md"
     create_file "$entry_file" "$template"
     $add_entry_timestamp && add_timestamp "$entry_file" "$entry_timestamp_format"
@@ -253,7 +441,7 @@ main() {
     -n | --note | n | note) draft_note ;;
     -t | --todo | t | todo) pending_todos ;;
     -p | --pending | p | pending) count_pending_todos ;;
-    "" | [0-9-]*) new_todo "$1" ;;
+    "" | [0-9-]* | *day* | *week* | *month* | *year* | *_sun | *_mon | *_tue | *_wed | *_thu | *_fri | *_sat | next_* | last_* | tomorrow) new_todo "$1" ;;
     *) find_or_create_note "$1" ;;
     esac
 }
