@@ -107,38 +107,12 @@ get_date_command() {
     fi
 }
 
-days_until_weekday() {
-    local target_day="$1"
-    local date_cmd=$(get_date_command)
-    local current_day=$($date_cmd +%w)
-    local days_ahead=$(((target_day - current_day + 7) % 7))
-    # If target is today, go to next week
-    [ $days_ahead -eq 0 ] && days_ahead=7
-    echo $days_ahead
-}
-
-days_since_weekday() {
-    local target_day="$1"
-    local date_cmd=$(get_date_command)
-    local current_day=$($date_cmd +%w)
-    local days_back=$(((current_day - target_day + 7) % 7))
-    # If target is today, go to last week
-    [ $days_back -eq 0 ] && days_back=7
-    echo "-$days_back"
-}
-
-days_to_weekday_same_week() {
+days_to_weekday() {
     local target_day="$1"
     local date_cmd=$(get_date_command)
     local current_day=$($date_cmd +%w)
 
-    # Convert Sunday=0 to Monday=0 week format
-    # Sunday becomes 6, Monday becomes 0, Tuesday becomes 1, etc.
-    local current_day_mon_week=$(((current_day + 6) % 7))
-    local target_day_mon_week=$(((target_day + 6) % 7))
-
-    local days_diff=$((target_day_mon_week - current_day_mon_week))
-    echo "$days_diff"
+    echo $((target_day - current_day))
 }
 
 parse_natural_date() {
@@ -150,29 +124,29 @@ parse_natural_date() {
     "tomorrow") echo "1" ;;
     "yesterday") echo "-1" ;;
 
-    "sunday" | "sun") echo $(days_to_weekday_same_week 0) ;;
-    "monday" | "mon") echo $(days_to_weekday_same_week 1) ;;
-    "tuesday" | "tue") echo $(days_to_weekday_same_week 2) ;;
-    "wednesday" | "wed") echo $(days_to_weekday_same_week 3) ;;
-    "thursday" | "thu") echo $(days_to_weekday_same_week 4) ;;
-    "friday" | "fri") echo $(days_to_weekday_same_week 5) ;;
-    "saturday" | "sat") echo $(days_to_weekday_same_week 6) ;;
+    "sunday" | "sun") echo $(days_to_weekday 0) ;;
+    "monday" | "mon") echo $(days_to_weekday 1) ;;
+    "tuesday" | "tue") echo $(days_to_weekday 2) ;;
+    "wednesday" | "wed") echo $(days_to_weekday 3) ;;
+    "thursday" | "thu") echo $(days_to_weekday 4) ;;
+    "friday" | "fri") echo $(days_to_weekday 5) ;;
+    "saturday" | "sat") echo $(days_to_weekday 6) ;;
 
-    "next_sunday" | "next_sun") echo $(days_until_weekday 0) ;;
-    "next_monday" | "next_mon") echo $(days_until_weekday 1) ;;
-    "next_tuesday" | "next_tue") echo $(days_until_weekday 2) ;;
-    "next_wednesday" | "next_wed") echo $(days_until_weekday 3) ;;
-    "next_thursday" | "next_thu") echo $(days_until_weekday 4) ;;
-    "next_friday" | "next_fri") echo $(days_until_weekday 5) ;;
-    "next_saturday" | "next_sat") echo $(days_until_weekday 6) ;;
+    "next_sunday" | "next_sun") echo $(($(days_to_weekday 0) + 7)) ;;
+    "next_monday" | "next_mon") echo $(($(days_to_weekday 1) + 7)) ;;
+    "next_tuesday" | "next_tue") echo $(($(days_to_weekday 2) + 7)) ;;
+    "next_wednesday" | "next_wed") echo $(($(days_to_weekday 3) + 7)) ;;
+    "next_thursday" | "next_thu") echo $(($(days_to_weekday 4) + 7)) ;;
+    "next_friday" | "next_fri") echo $(($(days_to_weekday 5) + 7)) ;;
+    "next_saturday" | "next_sat") echo $(($(days_to_weekday 6) + 7)) ;;
 
-    "last_sunday" | "last_sun") echo $(days_since_weekday 0) ;;
-    "last_monday" | "last_mon") echo $(days_since_weekday 1) ;;
-    "last_tuesday" | "last_tue") echo $(days_since_weekday 2) ;;
-    "last_wednesday" | "last_wed") echo $(days_since_weekday 3) ;;
-    "last_thursday" | "last_thu") echo $(days_since_weekday 4) ;;
-    "last_friday" | "last_fri") echo $(days_since_weekday 5) ;;
-    "last_saturday" | "last_sat") echo $(days_since_weekday 6) ;;
+    "last_sunday" | "last_sun") echo $(($(days_to_weekday 0) - 7)) ;;
+    "last_monday" | "last_mon") echo $(($(days_to_weekday 1) - 7)) ;;
+    "last_tuesday" | "last_tue") echo $(($(days_to_weekday 2) - 7)) ;;
+    "last_wednesday" | "last_wed") echo $(($(days_to_weekday 3) - 7)) ;;
+    "last_thursday" | "last_thu") echo $(($(days_to_weekday 4) - 7)) ;;
+    "last_friday" | "last_fri") echo $(($(days_to_weekday 5) - 7)) ;;
+    "last_saturday" | "last_sat") echo $(($(days_to_weekday 6) - 7)) ;;
 
     "next_week") echo "7" ;;
     "last_week") echo "-7" ;;
