@@ -167,24 +167,24 @@ parse_natural_date() {
     "next-year") echo "365" ;;
 
     # Programmatic patterns (handle both singular and plural)
-    [0-9]*-week-from-now | [0-9]*-weeks-from-now)
-        local weeks="${lower_input%-week*-from-now}"
+    [0-9]*-week-later | [0-9]*-weeks-later)
+        local weeks="${lower_input%-week*-later}"
         [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * 7))
         ;;
     [0-9]*-week-ago | [0-9]*-weeks-ago)
         local weeks="${lower_input%-week*-ago}"
         [[ "$weeks" =~ ^[0-9]+$ ]] && echo $((weeks * -7))
         ;;
-    [0-9]*-month-from-now | [0-9]*-months-from-now)
-        local months="${lower_input%-month*-from-now}"
+    [0-9]*-month-later | [0-9]*-months-later)
+        local months="${lower_input%-month*-later}"
         [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "+"
         ;;
     [0-9]*-month-ago | [0-9]*-months-ago)
         local months="${lower_input%-month*-ago}"
         [[ "$months" =~ ^[0-9]+$ ]] && calculate_date_offset "$months" "months" "-"
         ;;
-    [0-9]*-year-from-now | [0-9]*-years-from-now)
-        local years="${lower_input%-year*-from-now}"
+    [0-9]*-year-later | [0-9]*-years-later)
+        local years="${lower_input%-year*-later}"
         [[ "$years" =~ ^[0-9]+$ ]] && calculate_date_offset "$years" "years" "+"
         ;;
     [0-9]*-year-ago | [0-9]*-years-ago)
