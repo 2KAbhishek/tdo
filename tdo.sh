@@ -441,7 +441,7 @@ main() {
     -n | --note | n | note) draft_note ;;
     -t | --todo | t | todo) pending_todos ;;
     -p | --pending | p | pending) count_pending_todos ;;
-    "" | [0-9-]* | *day* | *week* | *month* | *year* | *_sun | *_mon | *_tue | *_wed | *_thu | *_fri | *_sat | next_* | last_* | tomorrow) new_todo "$1" ;;
+    "" | [0-9-]* | *day* | *week* | *month* | *year* | *sun | *mon | *tue | *wed | *thu | *fri | *sat | next_* | last_* | tomorrow) new_todo "$1" ;;
     *) find_or_create_note "$1" ;;
     esac
 }
