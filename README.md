@@ -34,13 +34,12 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 
 ## ✨ Features
 
-- Can help you manage a daily log, todos, journal and notes
-- Review pending and upcoming todos, past journal entries and more
-- Integrates with git to commit and backup your notes automatically, check [tdo.nvim](https://github.com/2kabhishek/tdo.nvim) for neovim integration
-- Has interactive fuzzy searching capabilities powered by fzf
-- Can integrate with other tools in pipes and subshells for extended functionality
-- Supports all editors, set `$EDITOR` to your choice
-- Integrates with AI agents and workflows with MCP, provided by [mcp-tdo](https://github.com/2kabhishek/mcp-tdo)
+- **Unified Note System**: Manage daily todos, journal entries, and long-term notes in one organized system with intuitive navigation
+- **Natural Language Dates**: Use expressions like `tomorrow`, `next-friday`, `2-weeks-ago`, or `2025-12-25` instead of calculating offsets manually
+- **Fuzzy Search**: Interactive search powered by fzf with syntax highlighting to quickly find and review any note
+- **Git Integration**: Automatically commits and backs up your notes with timestamps for seamless sync across devices
+- **Editor Flexibility**: Works with any editor through `$EDITOR` - vim, emacs, vscode, includes [neovim integration](https://github.com/2kabhishek/tdo.nvim)
+- **AI & Automation**: Integrates with workflows, pipes, subshells, and AI agents through [mcp-tdo](https://github.com/2kabhishek/mcp-tdo)
 
 ## ⚡ Setup
 
@@ -118,11 +117,10 @@ tdo will automatically commit every change with a timestamp like `03 Feb 11:33` 
 If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhishek/tdo.nvim), it seamlessly integrates `tdo` and `nvim` and adds some useful features on top.
 
 - `tdo` to open today's todos
-- `tdo <offset_days>` to open todos from `offset_days` in the past or future, e.g: `tdo 1`, `tdo -2`
+- `tdo <date_expression>` to open todos with flexible date formats, e.g: `tdo 1`, `tdo monday`, `tdo next-friday`, `tdo 2-weeks-later`, `tdo 2025-07-14`
+- `tdo entry <date_expression>` to open journal entry with same flexible date formats as todos, e.g: `tdo e tomorrow` `tdo e last-tue`, `tdo e 1-year-ago`
 - `tdo <note_title>` to open or create a `note_tile.md` note, use folder names to categorise notes, e.g: `tdo tech/vim-tips`
 - `tdo note` or `tdo n` to create a new note with the current timestamp in `drafts`
-- `tdo entry` or `tdo e` to open today's journal entry
-- `tdo entry <offset_days>` to open journal entry from `offset_days` in the past or future, e.g: `tdo e -3`
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
 - `tdo todo` or `tdo t` to show all your pending todos
@@ -131,7 +129,44 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 
 > Run `tdo h` to get more help info on the command line
 
-### 📁 Dir Structure
+### 📅 Natural Date Parsing
+
+tdo supports intuitive natural language date expressions for both todos and journal entries.
+This makes it easy to reference dates without calculating offsets manually.
+
+#### Supported Formats
+
+**Numeric Offsets:**
+
+- Positive numbers for future days: `1`, `7`, `30`
+- Negative numbers for past days: `-1`, `-7`, `-30`
+
+**Basic Relative Dates:**
+
+- `today`, `tomorrow`, `yesterday`
+
+**Weekdays:**
+
+- `sunday`, `monday`, `tuesday`, `wednesday`, `thursday`, `friday`, `saturday`
+- `next-sunday`, `next-monday`, etc. (next week's occurrence)
+- `last-sunday`, `last-monday`, etc. (previous week's occurrence)
+- Short forms: `sun`, `mon`, `tue`, `wed`, `thu`, `fri`, `sat` `next-sun`, `last-mon`, etc.
+
+**Quick Aliases:**
+
+- `next-week`, `last-week`, `next-month`, `last-month`, `next-year`, `last-year`
+
+**Programmatic Patterns:**
+
+- `N-weeks-ago` / `N-weeks-later` (e.g., `2-weeks-ago`, `3-weeks-later`)
+- `N-months-ago` / `N-months-later` (e.g., `1-month-ago`, `6-months-later`)
+- `N-years-ago` / `N-years-later` (e.g., `1-year-ago`, `2-years-later`)
+
+**Absolute Dates:**
+
+- `YYYY-MM-DD` format (e.g., `2025-07-14`)
+
+### 📁 Folder Structure
 
 `tdo` expects an opinionated directory structure to function.
 
