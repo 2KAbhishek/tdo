@@ -370,4 +370,7 @@ main() {
     esac
 }
 
-main "$@"
+# Only run main if not in testing mode
+if [[ "${BATS_TESTING:-}" != "true" ]]; then
+    main "$@"
+fi
