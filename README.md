@@ -220,6 +220,29 @@ NOTE_TIMESTAMP_FORMAT="## %a. %b %d, %Y - %I:%M %p"
 
 > configs defined in `tdorc` will override corresponding environment variables
 
+## 🧪 Testing
+
+tdo includes comprehensive unit and integration tests to ensure reliability.
+
+### Running Tests
+
+```bash
+# Install bats-core (testing framework)
+brew install bats-core  # macOS
+sudo apt-get install bats  # Ubuntu/Debian
+
+# Run all tests
+bats tests/unit tests/integration
+```
+
+### Test Coverage
+
+- **Unit Tests**: Date parsing, file generation, utility functions
+- **Integration Tests**: End-to-end workflows for todos, journal entries, and notes
+- **Mock System**: Isolated testing with fixed dates and mocked external dependencies
+
+All tests use a comprehensive mocking strategy to ensure consistent, predictable results across different environments and dates.
+
 ## 🏗️ What's Next
 
 You tell me!
