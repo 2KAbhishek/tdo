@@ -52,14 +52,12 @@ load '../test_helper'
 }
 
 @test "generate_file_path handles edge case dates" {
-    # Test month boundaries
     result=$(generate_file_path "2025-01-31")
     assert_equal "$result" "2025/01/2025-01-31.md"
 
     result=$(generate_file_path "2025-12-31")
     assert_equal "$result" "2025/12/2025-12-31.md"
 
-    # Test leap year
     result=$(generate_file_path "2024-02-29")
     assert_equal "$result" "2024/02/2024-02-29.md"
 }

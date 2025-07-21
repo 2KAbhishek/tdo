@@ -2,73 +2,41 @@
 
 load '../test_helper'
 
-@test "get_date_command returns gdate on Darwin" {
-    # Test the actual get_date_command logic by creating a local version
-    get_date_command_real() {
-        if [ "$(uname)" = "Darwin" ]; then
-            if command -v gdate &>/dev/null; then
-                echo "gdate"
-            else
-                echo "date"
-            fi
+_test_get_date_command() {
+    if [ "$(uname)" = "Darwin" ]; then
+        if command -v gdate &>/dev/null; then
+            echo "gdate"
         else
             echo "date"
         fi
-    }
+    else
+        echo "date"
+    fi
+}
 
-    # Mock uname to return Darwin
+@test "get_date_command returns gdate on Darwin" {
     uname() { echo "Darwin"; }
+    command() { [[ "$*" == *"gdate"* ]]; }
 
-    # Mock command to succeed for gdate
-    command() {
-        if [[ "$*" == *"gdate"* ]]; then
-            return 0
-        else
-            return 1
-        fi
-    }
-
-    result=$(get_date_command_real)
+    result=$(_test_get_date_command)
     assert_equal "$result" "gdate"
 }
 
 @test "get_date_command returns date on Linux" {
-    # Test the actual get_date_command logic by creating a local version
-    get_date_command_real() {
-        if [ "$(uname)" = "Darwin" ]; then
-            if command -v gdate &>/dev/null; then
-                echo "gdate"
-            else
-                echo "date"
-            fi
-        else
-            echo "date"
-        fi
-    }
-
-    # Mock uname to return Linux
     uname() { echo "Linux"; }
 
-    result=$(get_date_command_real)
+    result=$(_test_get_date_command)
     assert_equal "$result" "date"
 }
 
 @test "check_command succeeds for existing commands" {
-    # Mock command to simulate existing command
-    command() {
-        if [[ "$2" == "bash" ]]; then
-            return 0
-        else
-            return 1
-        fi
-    }
+    command() { [[ "$2" == "bash" ]]; }
 
     run check_command "bash"
     assert_success
 }
 
 @test "check_command fails for non-existing commands" {
-    # Mock command to simulate missing command
     command() { return 1; }
 
     run check_command "nonexistent-command"
@@ -117,18 +85,13 @@ EOF
 }
 
 @test "calculate_date_offset handles months correctly" {
-    # Mock the date calculation
     local result
     result=$(calculate_date_offset "1" "months" "+")
-
-    # Should return a number (days offset)
     [[ "$result" =~ ^-?[0-9]+$ ]]
 }
 
 @test "calculate_date_offset handles years correctly" {
     local result
     result=$(calculate_date_offset "1" "years" "-")
-
-    # Should return a number (days offset)
     [[ "$result" =~ ^-?[0-9]+$ ]]
 }

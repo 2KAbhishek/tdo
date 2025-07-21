@@ -25,20 +25,17 @@ load '../test_helper'
 }
 
 @test "parse_natural_date handles weekdays in current week" {
-    # Current date: Friday July 18, 2025 (weekday 5)
-    # Sunday=0, Monday=1, Tuesday=2, Wednesday=3, Thursday=4, Friday=5, Saturday=6
-
     result=$(parse_natural_date "sunday")
-    assert_equal "$result" "-5"  # Sunday of current week (0-5=-5)
+    assert_equal "$result" "-5"
 
     result=$(parse_natural_date "monday")
-    assert_equal "$result" "-4"  # Monday of current week (1-5=-4)
+    assert_equal "$result" "-4"
 
     result=$(parse_natural_date "friday")
-    assert_equal "$result" "0"   # Today (5-5=0)
+    assert_equal "$result" "0"
 
     result=$(parse_natural_date "saturday")
-    assert_equal "$result" "1"   # Tomorrow (6-5=1)
+    assert_equal "$result" "1"
 }
 
 @test "parse_natural_date handles short weekday forms" {
@@ -56,27 +53,25 @@ load '../test_helper'
 }
 
 @test "parse_natural_date handles next week patterns" {
-    # Next week = current week offset + 7
     result=$(parse_natural_date "next-sunday")
-    assert_equal "$result" "2"   # (-5) + 7 = 2
+    assert_equal "$result" "2"
 
     result=$(parse_natural_date "next-monday")
-    assert_equal "$result" "3"   # (-4) + 7 = 3
+    assert_equal "$result" "3"
 
     result=$(parse_natural_date "next-friday")
-    assert_equal "$result" "7"   # 0 + 7 = 7
+    assert_equal "$result" "7"
 }
 
 @test "parse_natural_date handles last week patterns" {
-    # Last week = current week offset - 7
     result=$(parse_natural_date "last-sunday")
-    assert_equal "$result" "-12"  # (-5) - 7 = -12
+    assert_equal "$result" "-12"
 
     result=$(parse_natural_date "last-monday")
-    assert_equal "$result" "-11"  # (-4) - 7 = -11
+    assert_equal "$result" "-11"
 
     result=$(parse_natural_date "last-friday")
-    assert_equal "$result" "-7"   # 0 - 7 = -7
+    assert_equal "$result" "-7"
 }
 
 @test "parse_natural_date handles short next/last forms" {
@@ -122,25 +117,20 @@ load '../test_helper'
 }
 
 @test "parse_natural_date handles invalid week patterns" {
-    # Invalid number should return original input
     result=$(parse_natural_date "abc-weeks-ago")
     assert_equal "$result" "abc-weeks-ago"
 
-    # Decimal numbers should return original input
     result=$(parse_natural_date "2.5-weeks-later" 2>/dev/null || echo "2.5-weeks-later")
     assert_equal "$result" "2.5-weeks-later"
 }
 
 @test "parse_natural_date handles month patterns" {
-    # These will use calculate_date_offset function
-    # For testing, we assume it returns proper day offsets
     run parse_natural_date "1-month-later"
     assert_success
 
     run parse_natural_date "2-months-ago"
     assert_success
 
-    # Invalid patterns
     result=$(parse_natural_date "abc-months-ago")
     assert_equal "$result" "abc-months-ago"
 }
@@ -152,7 +142,6 @@ load '../test_helper'
     run parse_natural_date "2-years-ago"
     assert_success
 
-    # Invalid patterns
     result=$(parse_natural_date "abc-years-ago")
     assert_equal "$result" "abc-years-ago"
 }
@@ -169,16 +158,15 @@ load '../test_helper'
 }
 
 @test "days_to_weekday calculates correct offsets" {
-    # Current day is Friday (5)
-    result=$(days_to_weekday 0)  # Sunday
+    result=$(days_to_weekday 0)
     assert_equal "$result" "-5"
 
-    result=$(days_to_weekday 1)  # Monday
+    result=$(days_to_weekday 1)
     assert_equal "$result" "-4"
 
-    result=$(days_to_weekday 5)  # Friday (today)
+    result=$(days_to_weekday 5)
     assert_equal "$result" "0"
 
-    result=$(days_to_weekday 6)  # Saturday
+    result=$(days_to_weekday 6)
     assert_equal "$result" "1"
 }
