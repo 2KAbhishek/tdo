@@ -5,7 +5,6 @@ load '../test_helper'
 @test "tdo with no arguments creates today's todo" {
     run_tdo_non_interactive ""
 
-    # Should create today's todo file
     expected_file="$TODOS_DIR/todos/2025/07/2025-07-18.md"
     assert_file_exists "$expected_file"
 }
@@ -63,7 +62,6 @@ load '../test_helper'
 @test "tdo note creates draft note with timestamp" {
     run_tdo_non_interactive "n"
 
-    # Check that a draft file was created (exact filename varies by timestamp)
     draft_files=$(find "$NOTES_DIR/notes/drafts" -name "*.md" 2>/dev/null | wc -l)
     [[ "$draft_files" -gt 0 ]]
 }
@@ -76,7 +74,6 @@ load '../test_helper'
 }
 
 @test "tdo with command flags work correctly" {
-    # Test pending todos count (should be 0 in fresh environment)
     run tdo "p"
     assert_success
     assert_equal "$output" "0"
@@ -88,7 +85,6 @@ load '../test_helper'
     expected_file="$NOTES_DIR/notes/test-note.md"
     assert_file_exists "$expected_file"
 
-    # Check that template content was used
     content=$(cat "$expected_file")
     assert_contains "$content" "# Note Template"
 }
@@ -96,19 +92,16 @@ load '../test_helper'
 @test "directory structure is created automatically" {
     run_tdo_non_interactive "2025-01-01"
 
-    # Should create year and month directories
     assert_dir_exists "$TODOS_DIR/todos/2025"
     assert_dir_exists "$TODOS_DIR/todos/2025/01"
     assert_file_exists "$TODOS_DIR/todos/2025/01/2025-01-01.md"
 }
 
 @test "weekday patterns work correctly in workflows" {
-    # Test current week Monday
     run_tdo_non_interactive "monday"
     expected_file="$TODOS_DIR/todos/2025/07/2025-07-14.md"
     assert_file_exists "$expected_file"
 
-    # Test next week Friday
     run_tdo_non_interactive "next-friday"
     expected_file="$TODOS_DIR/todos/2025/07/2025-07-25.md"
     assert_file_exists "$expected_file"

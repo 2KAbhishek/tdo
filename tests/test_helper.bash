@@ -46,7 +46,6 @@ setup_mocks() {
     rg() { echo "Mock rg output"; }
     fzf() { echo "Mock fzf output"; }
 
-    # Allows unit test mocks while providing defaults for integration tests
     check_command() {
         if declare -f command >/dev/null 2>&1 && [[ "$(type -t command)" == "function" ]]; then
             if ! command -v "$1" &>/dev/null; then
