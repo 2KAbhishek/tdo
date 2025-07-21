@@ -268,7 +268,7 @@ pending_todos() {
             fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
     else
-        rg -l --glob '!/templates/*' '\[ \]' "$root"
+        rg -l --glob '!/templates/*' '\[ \]' "$root" | sort
     fi
 }
 
