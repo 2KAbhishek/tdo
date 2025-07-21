@@ -43,7 +43,73 @@ setup() {
 setup_mocks() {
     get_date_command() { echo "mock_date"; }
     date() { mock_date "$@"; }
-    rg() { echo "Mock rg output"; }
+    rg() {
+        local search_dir=""
+        local last_arg=""
+        for arg in "$@"; do
+            if [[ -d "$arg" ]]; then
+                search_dir="$arg"
+            fi
+            last_arg="$arg"
+        done
+
+        case "$1" in
+        -li | --files-with-matches)
+            shift
+            if [[ "$*" == *"vim"* ]]; then
+                if [[ -f "$search_dir/notes/vim.md" ]]; then
+                    echo "notes/vim.md"
+                elif [[ -f "$search_dir/notes/vim-tips.md" ]]; then
+                    echo "notes/vim-tips.md"
+                fi
+            elif [[ "$*" == *"docker"* ]]; then
+                echo "notes/tech/docker.md"
+            fi
+            ;;
+        -l)
+            shift
+            if [[ "$*" == *"\\[ \\]"* ]]; then
+                local todo_files=""
+                if [[ -f "$search_dir/todos/2025/07/project.md" ]]; then
+                    todo_files="todos/2025/07/project.md"
+                fi
+                if [[ -f "$search_dir/todos/2025/07/personal.md" ]]; then
+                    todo_files="$todo_files
+todos/2025/07/personal.md"
+                fi
+                if [[ -f "$search_dir/todos/2025/07/test.md" ]]; then
+                    todo_files="$todo_files
+todos/2025/07/test.md"
+                fi
+                if [[ -f "$search_dir/todos/2025/08/future.md" ]]; then
+                    todo_files="$todo_files
+todos/2025/08/future.md"
+                fi
+                echo "$todo_files" | grep -v "^$"
+            fi
+            ;;
+        --count-matches)
+            if [[ "$*" == *"\\[ \\]"* ]]; then
+                local count=0
+                if [[ -f "$search_dir/todos/2025/07/project.md" ]]; then
+                    count=$((count + 3))
+                fi
+                if [[ -f "$search_dir/todos/2025/07/personal.md" ]]; then
+                    count=$((count + 2))
+                fi
+                if [[ -f "$search_dir/todos/2025/08/future.md" ]]; then
+                    count=$((count + 2))
+                fi
+                echo "$count"
+            else
+                echo "0"
+            fi
+            ;;
+        *)
+            echo ""
+            ;;
+        esac
+    }
     fzf() { echo "Mock fzf output"; }
 
     check_command() {
@@ -199,4 +265,151 @@ assert_contains() {
 
 run_tdo_non_interactive() {
     INTERACTIVE=false tdo "$@"
+}
+
+mock_git_not_repo() {
+    git() {
+        echo "git called with: $*" >&2
+        return 1
+    }
+}
+
+mock_git_repo_with_changes() {
+    git() {
+        case "$1" in
+        "rev-parse") echo ".git" ;;
+        "status") echo "?? new_file.txt" ;;
+        "pull" | "add" | "commit") return 0 ;;
+        *) return 1 ;;
+        esac
+    }
+}
+
+mock_git_repo_no_changes() {
+    git() {
+        case "$1" in
+        "rev-parse") echo ".git" ;;
+        "status") echo "" ;;
+        *) return 0 ;;
+        esac
+    }
+}
+
+mock_git_repo_failures() {
+    git() {
+        case "$1" in
+        "rev-parse") echo ".git" ;;
+        "status") echo "?? file.txt" ;;
+        "pull" | "add" | "commit") return 1 ;;
+        *) return 1 ;;
+        esac
+    }
+}
+
+test_editor_command_generation() {
+    local editor="$1"
+    local pattern="$2"
+    local expected="$3"
+
+    export EDITOR="$editor"
+
+    local result
+    if [[ "$pattern" == *" ]"* ]]; then
+        result=$(generate_editor_command_for_todos)
+    else
+        result=$(generate_editor_command_for_search "$pattern")
+    fi
+
+    assert_equal "$result" "$expected"
+}
+
+generate_editor_command_for_search() {
+    local pattern="$1"
+    local todo_cmd=''
+    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ] && [ -n "$pattern" ]; then
+        todo_cmd="+'/$pattern' +'norm! n'"
+    fi
+    echo "$todo_cmd"
+}
+
+generate_editor_command_for_todos() {
+    local todo_cmd=''
+    if [ "$EDITOR" = "vim" ] || [ "$EDITOR" = "nvim" ]; then
+        todo_cmd="+'/ ]' +'norm! n'"
+    fi
+    echo "$todo_cmd"
+}
+
+test_root_directory_fallback() {
+    local function_type="$1"
+    local expected_dir="$2"
+
+    local result
+    case "$function_type" in
+    "notes")
+        result=$(test_notes_root_directory)
+        ;;
+    "todos")
+        result=$(test_todos_root_directory)
+        ;;
+    "count_pending")
+        result=$(test_count_pending_root_directory)
+        ;;
+    esac
+
+    assert_equal "$result" "$expected_dir"
+}
+
+test_notes_root_directory() {
+    local root="$NOTES_DIR"
+    echo "$root"
+}
+
+test_todos_root_directory() {
+    local root="${TODOS_DIR:-$NOTES_DIR}"
+    echo "$root"
+}
+
+test_count_pending_root_directory() {
+    local root="${TODOS_DIR:-$NOTES_DIR}"
+    echo "$root"
+}
+
+create_test_todo_file() {
+    local file_path="$1"
+    mkdir -p "$(dirname "$file_path")"
+    cat >"$file_path" <<EOF
+- [ ] Test task
+EOF
+}
+
+create_test_content_structure() {
+    mkdir -p "$NOTES_DIR/notes/tech"
+    cat >"$NOTES_DIR/notes/vim-tips.md" <<EOF
+# Vim Tips
+Some useful vim shortcuts and techniques.
+Advanced editing features.
+EOF
+
+    cat >"$NOTES_DIR/notes/tech/docker.md" <<EOF
+# Docker Notes
+Container management and deployment.
+Docker compose configurations.
+EOF
+
+    mkdir -p "$TODOS_DIR/todos/2025/07"
+    cat >"$TODOS_DIR/todos/2025/07/project.md" <<EOF
+# Project Tasks
+- [x] Setup repository
+- [ ] Write documentation
+- [ ] Add tests
+- [ ] Deploy to production
+EOF
+
+    cat >"$TODOS_DIR/todos/2025/07/personal.md" <<EOF
+# Personal Tasks
+- [ ] Buy groceries
+- [x] Call dentist
+- [ ] Fix bike
+EOF
 }
