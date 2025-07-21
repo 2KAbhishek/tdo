@@ -249,7 +249,7 @@ find_note() {
 
 count_pending_todos() {
     root="${TODOS_DIR:-$NOTES_DIR}"
-    count=$(rg --count-matches --no-filename --glob '!/templates/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
+    count=$(rg --count-matches --no-filename --glob '!**/templates/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
     echo "${count}"
 }
 
@@ -264,11 +264,11 @@ pending_todos() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        rg -l --glob '!/templates/*' '\[ \]' | sort |
+        rg -l --glob '!**/templates/*' '\[ \]' | sort |
             fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes
     else
-        rg -l --glob '!/templates/*' '\[ \]' "$root" | sort
+        rg -l --glob '!**/templates/*' '\[ \]' "$root" | sort
     fi
 }
 
