@@ -25,10 +25,10 @@ install_shell() {
     mkdir -p "$(dirname "$exports_file")"
     touch "$exports_file"
 
-    if ! grep -Fq '$HOME/.local/bin' "$exports_file"; then
+    if ! grep -Eq '(\$HOME|~)/\.local/bin' "$exports_file" 2>/dev/null; then
         echo 'export PATH="$HOME/.local/bin:$PATH"' >> "$exports_file"
     fi
-    if ! grep -Fq 'NOTES_DIR=' "$exports_file"; then
+    if ! grep -Fq 'NOTES_DIR=' "$exports_file" 2>/dev/null; then
         echo "export NOTES_DIR=\"$NOTES_DIR\"" >> "$exports_file"
     fi
 }
@@ -37,10 +37,18 @@ echo "Setting up tdo..."
 mkdir -p "$NOTES_DIR"
 if [ -d "$current_dir/templates" ]; then
     mkdir -p "$NOTES_DIR/templates"
-    cp -rn "$current_dir/templates/"* "$NOTES_DIR/templates/" 2>/dev/null || true
+    for tpl in "$current_dir/templates/"*; do
+        if [ -f "$tpl" ]; then
+            tpl_name="${tpl##*/}"
+            if [ ! -f "$NOTES_DIR/templates/$tpl_name" ]; then
+                cp "$tpl" "$NOTES_DIR/templates/$tpl_name"
+            fi
+        fi
+    done
 fi
 
 mkdir -p "$HOME/.local/bin"
+chmod +x "$current_dir/tdo.sh" 2>/dev/null || true
 ln -sfnv "$current_dir/tdo.sh" "$HOME/.local/bin/tdo"
 
 current_shell="${SHELL:-/bin/bash}"
