@@ -54,7 +54,12 @@ tdo is a opinionated, command line based note-taking system. [Demo video](https:
 ```bash
 git clone https://github.com/2kabhishek/tdo
 cd tdo
+
+# Automated setup
 ./setup.sh
+
+# Or manual symlink
+ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 ```
 
 #### 📦 Environment Variables
