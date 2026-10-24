@@ -52,10 +52,10 @@ load '../test_helper'
     assert_file_exists "$expected_file"
 }
 
-@test "tdo entry with invalid date falls back to note creation" {
+@test "tdo entry with non-date string creates titled journal entry" {
     run_tdo_non_interactive "e" "invalid-date"
 
-    expected_file="$NOTES_DIR/notes/invalid-date.md"
+    expected_file="$JOURNAL_DIR/entries/2025/07/2025-07-18-invalid-date.md"
     assert_file_exists "$expected_file"
 }
 

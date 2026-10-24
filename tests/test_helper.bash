@@ -45,12 +45,13 @@ setup_mocks() {
     date() { mock_date "$@"; }
     rg() {
         local search_dir=""
-        local last_arg=""
+        local search_term=""
         for arg in "$@"; do
             if [[ -d "$arg" ]]; then
                 search_dir="$arg"
+            elif [[ "$arg" != -* ]]; then
+                search_term="$arg"
             fi
-            last_arg="$arg"
         done
 
         case "$1" in
@@ -64,6 +65,10 @@ setup_mocks() {
                 fi
             elif [[ "$*" == *"docker"* ]]; then
                 echo "notes/tech/docker.md"
+            elif [[ -d "$search_dir" ]]; then
+                if [ -n "$search_term" ]; then
+                    grep -ril --exclude-dir='.git' "$search_term" "$search_dir" 2>/dev/null || true
+                fi
             fi
             ;;
         -l)
@@ -127,10 +132,15 @@ todos/2025/08/future.md"
     write_file() {
         local file_path="$1"
         local root="$2"
+        local cursor_cmd="${3:-}"
 
         if $INTERACTIVE; then
             cd "$root" || return
-            "$EDITOR" "$file_path"
+            if [ -n "$cursor_cmd" ] && [[ "$EDITOR" == "vim" || "$EDITOR" == "nvim" ]]; then
+                $EDITOR "$cursor_cmd" "$file_path"
+            else
+                "$EDITOR" "$file_path"
+            fi
             commit_changes "$(dirname "$file_path")"
         else
             echo "$file_path"
@@ -150,6 +160,7 @@ todos/2025/08/future.md"
         "+%s") echo "$MOCK_EPOCH" ;;
         "+%d %b %H:%M") echo "18 Jul 14:30" ;;
         "+%m-%d-%H-%M-%S") echo "07-18-14-30-45" ;;
+        +*##*) echo "## Fri, 02:30 PM" ;;
         -d) _handle_date_offset "$2" "$3" ;;
         *) echo "$MOCK_DATE" ;;
         esac
@@ -259,6 +270,13 @@ assert_dir_exists() {
 assert_contains() {
     if [[ "$1" != *"$2"* ]]; then
         echo "Expected '$1' to contain '$2'" >&2
+        return 1
+    fi
+}
+
+assert_not_contains() {
+    if [[ "$1" == *"$2"* ]]; then
+        echo "Expected '$1' NOT to contain '$2'" >&2
         return 1
     fi
 }
