@@ -68,9 +68,9 @@ setup_mocks() {
             elif [[ -d "$search_dir" ]]; then
                 if [ -n "$search_term" ]; then
                     if [[ "$search_dir" == *"/entries"* || "$search_dir" == *"/entries" ]]; then
-                        grep -ril --exclude-dir='.git' "$search_term" "$search_dir" 2>/dev/null || true
+                        grep -ril --include='*.md' --exclude-dir='.git' "$search_term" "$search_dir" 2>/dev/null || true
                     else
-                        grep -ril --exclude-dir='.git' --exclude-dir='entries' --exclude-dir='templates' --exclude-dir='journal' "$search_term" "$search_dir" 2>/dev/null || true
+                        grep -ril --include='*.md' --exclude-dir='.git' --exclude-dir='entries' --exclude-dir='templates' --exclude-dir='journal' "$search_term" "$search_dir" 2>/dev/null || true
                     fi
                 fi
             fi

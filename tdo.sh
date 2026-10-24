@@ -345,20 +345,20 @@ find_note() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        (rg -li --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sort |
+        (rg -li --glob '*.md' --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sort |
             fzf --delimiter / --with-nth -1 \
                 --bind "enter:execute($editor {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
         commit_changes "$root"
     else
-        (rg -li --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sed 's|.*/||' | sort
+        (rg -li --glob '*.md' --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sed 's|.*/||' | sort
     fi
 }
 
 count_pending_todos() {
     local root="${TODOS_DIR:-$NOTES_DIR}"
     local count
-    count=$(rg --count-matches --no-filename --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
+    count=$(rg --count-matches --no-filename --glob '*.md' --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
     echo "${count}"
 }
 
@@ -373,12 +373,12 @@ pending_todos() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        (rg -l --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sort |
+        (rg -l --glob '*.md' --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sort |
             fzf --delimiter / --with-nth -1 \
                 --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes "$root"
     else
-        (rg -l --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sed 's|.*/||' | sort
+        (rg -l --glob '*.md' --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sed 's|.*/||' | sort
     fi
 }
 

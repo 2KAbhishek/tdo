@@ -127,6 +127,8 @@ EOF
 @test "tdo f outputs only file names and excludes journal entries" {
     mkdir -p "$NOTES_DIR/notes/deep/path"
     echo "some unique query" > "$NOTES_DIR/notes/deep/path/target-note.md"
+    echo "some unique query in txt" > "$NOTES_DIR/notes/deep/path/target-note.txt"
+    echo "some unique query in json" > "$NOTES_DIR/notes/deep/path/target-note.json"
 
     mkdir -p "$JOURNAL_DIR/entries/2026/10"
     echo "some unique query in journal" > "$JOURNAL_DIR/entries/2026/10/2026-10-24.md"
@@ -137,6 +139,8 @@ EOF
     assert_not_contains "$output" "$NOTES_DIR"
     assert_not_contains "$output" "notes/deep"
     assert_not_contains "$output" "2026-10-24.md"
+    assert_not_contains "$output" "target-note.txt"
+    assert_not_contains "$output" "target-note.json"
 }
 
 @test "tdo t outputs only file names and excludes journal entries" {
