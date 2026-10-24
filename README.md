@@ -65,8 +65,8 @@ ln -sfnv "$PWD/tdo.sh" ~/.local/bin/tdo
 #### 📦 Environment Variables
 
 - `NOTES_DIR` should point to your notes directory
-- `TODOS_DIR` optional, should point to your todos directory, default: `NOTES_DIR/todos`
-- `JOURNAL_DIR` optional, should point to your journal directory, default: `NOTES_DIR/entries`
+- `TODOS_DIR` optional, should point to your todos directory root (todos live in `TODOS_DIR/todos`), default: `$NOTES_DIR`
+- `JOURNAL_DIR` optional, should point to your journal directory root (entries live in `JOURNAL_DIR/entries`), default: `$NOTES_DIR`
 
 - `EDITOR` set to your choice of editor
 
@@ -123,12 +123,18 @@ If you use Neovim, I highly recommend using [tdo.nvim](https://github.com/2kabhi
 
 - `tdo` to open today's todos
 - `tdo <date_expression>` to open todos with flexible date formats, e.g: `tdo 1`, `tdo monday`, `tdo next-friday`, `tdo 2-weeks-later`, `tdo 2025-07-14`
-- `tdo entry <date_expression>` to open journal entry with same flexible date formats as todos, e.g: `tdo e tomorrow` `tdo e last-tue`, `tdo e 1-year-ago`
-- `tdo <note_title>` to open or create a `note_tile.md` note, use folder names to categorise notes, e.g: `tdo tech/vim-tips`
+- `tdo -m "<todo>"` to quickly add a todo item to today's todo file (or `tdo <date> -m "<todo>"`)
+- `tdo entry` or `tdo e` to open today's journal entry
+- `tdo entry <date_expression>` to open journal entry with flexible date formats, e.g: `tdo e tomorrow`, `tdo e last-tue`, `tdo e 1-year-ago`
+- `tdo entry <date_expression> <title>` or `tdo e <title>` to create or open a titled journal entry, e.g: `tdo e retro`, `tdo e tomorrow standup`
+- `tdo e -m "<text>"` or `tdo em "<text>"` to quickly log a timestamped micro-entry to today's journal without opening your editor
+- `tdo e find <text>` or `tdo e f <text>` or `tdo ef <text>` to search across all your journal entries
+- `tdo e list` or `tdo el` to browse past journal entries in reverse chronological order
+- `tdo <note_title>` to open or create a `note_title.md` note, use folder names to categorise notes, e.g: `tdo tech/vim-tips`
 - `tdo note` or `tdo n` to create a new note with the current timestamp in `drafts`
 - `tdo find <text>` or `tdo f` to interactively search for `text` in all your notes
 - `tdo find` without any search term to review all your notes
-- `tdo todo` or `tdo t` to show all your pending todos
+- `tdo todo` or `tdo t` to show all your pending todos (supports `-m` to quick-add)
 - `tdo pending` or `tdo p` will show count of pending todos
 - `tdo commit <path>` or `tdo c` to commit changes in path, happens automatically, needed for plugins and integrations
 
