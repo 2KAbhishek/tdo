@@ -330,7 +330,7 @@ write_file() {
 
 find_note() {
     local root="$NOTES_DIR"
-    local term="$1"
+    local term="${1:-}"
 
     local todo_cmd=''
     if [[ "$EDITOR" == "vim" || "$EDITOR" == "nvim" ]] && [ -n "$term" ]; then
@@ -339,28 +339,26 @@ find_note() {
     local editor="$EDITOR $todo_cmd"
 
     local search_dirs=("$root")
-    if [ -n "$JOURNAL_DIR" ] && [ "$JOURNAL_DIR" != "$NOTES_DIR" ] && [ -d "$JOURNAL_DIR" ]; then
-        search_dirs+=("$JOURNAL_DIR")
-    fi
     if [ -n "$TODOS_DIR" ] && [ "$TODOS_DIR" != "$NOTES_DIR" ] && [ -d "$TODOS_DIR" ]; then
         search_dirs+=("$TODOS_DIR")
     fi
 
     if $INTERACTIVE; then
         cd "$root" || return
-        rg -li --sort path "$term" "${search_dirs[@]}" | sort |
-            fzf --bind "enter:execute($editor {})" \
+        (rg -li --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sort |
+            fzf --delimiter / --with-nth -1 \
+                --bind "enter:execute($editor {})" \
                 --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
         commit_changes "$root"
     else
-        rg -li --sort path "$term" "${search_dirs[@]}" || true
+        (rg -li --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' --sort path "$term" "${search_dirs[@]}" || true) | sed 's|.*/||' | sort
     fi
 }
 
 count_pending_todos() {
     local root="${TODOS_DIR:-$NOTES_DIR}"
     local count
-    count=$(rg --count-matches --no-filename --glob '!**/templates/*' --glob '!**/entries/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
+    count=$(rg --count-matches --no-filename --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" | awk '{s+=$1} END {print +s}')
     echo "${count}"
 }
 
@@ -375,11 +373,12 @@ pending_todos() {
 
     if $INTERACTIVE; then
         cd "$root" || return
-        rg -l --glob '!**/templates/*' --glob '!**/entries/*' '\[ \]' "$root" | sort |
-            fzf --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
+        (rg -l --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sort |
+            fzf --delimiter / --with-nth -1 \
+                --bind "enter:execute($editor {})" --preview 'rg -e "\[ \]" {}'
         commit_changes "$root"
     else
-        rg -l --glob '!**/templates/*' --glob '!**/entries/*' '\[ \]' "$root" | sort
+        (rg -l --glob '!**/templates/*' --glob '!**/entries/*' --glob '!**/journal/*' '\[ \]' "$root" || true) | sed 's|.*/||' | sort
     fi
 }
 
@@ -714,7 +713,7 @@ find_or_create_note() {
 
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
-    notes=$(find "$root" -type f -not -path '*/\.*' -iname "*$1*")
+    notes=$(find "$root" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*")
 
     if [ -z "$notes" ]; then
         new_note "$1"
@@ -724,15 +723,16 @@ find_or_create_note() {
             if [ "$(echo "$notes" | wc -l)" -eq 1 ]; then
                 $EDITOR "$notes"
             else
-                find "$root" -type f -not -path '*/\.*' -iname "*$1*" | sed "s|^$PWD/||" | sort |
-                    fzf --bind "enter:execute($EDITOR {})" \
+                find "$root" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*" | sort |
+                    fzf --delimiter / --with-nth -1 \
+                        --bind "enter:execute($EDITOR {})" \
                         --bind "ctrl-n:execute(cp $template $note_file && $EDITOR $note_file)" \
                         --header "Ctrl-n: Create '$1.md'" \
                         --preview "bat --style=numbers --color=always --line-range=:500 {} || cat {}"
             fi
             commit_changes "$root"
         else
-            echo "$notes"
+            echo "$notes" | sed 's|.*/||' | sort
         fi
     fi
 }

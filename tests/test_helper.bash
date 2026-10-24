@@ -67,7 +67,11 @@ setup_mocks() {
                 echo "notes/tech/docker.md"
             elif [[ -d "$search_dir" ]]; then
                 if [ -n "$search_term" ]; then
-                    grep -ril --exclude-dir='.git' "$search_term" "$search_dir" 2>/dev/null || true
+                    if [[ "$search_dir" == *"/entries"* || "$search_dir" == *"/entries" ]]; then
+                        grep -ril --exclude-dir='.git' "$search_term" "$search_dir" 2>/dev/null || true
+                    else
+                        grep -ril --exclude-dir='.git' --exclude-dir='entries' --exclude-dir='templates' --exclude-dir='journal' "$search_term" "$search_dir" 2>/dev/null || true
+                    fi
                 fi
             fi
             ;;
@@ -90,7 +94,15 @@ todos/2025/07/test.md"
                     todo_files="$todo_files
 todos/2025/08/future.md"
                 fi
-                echo "$todo_files" | grep -v "^$"
+                if [[ -n "$search_dir" && -d "$search_dir" ]]; then
+                    local dynamic_todos
+                    dynamic_todos=$(grep -rl --exclude-dir='.git' --exclude-dir='entries' --exclude-dir='templates' --exclude-dir='journal' '\[ \]' "$search_dir" 2>/dev/null || true)
+                    if [[ -n "$dynamic_todos" ]]; then
+                        todo_files="$todo_files
+$dynamic_todos"
+                    fi
+                fi
+                echo "$todo_files" | grep -v "^$" | sort -u
             fi
             ;;
         --count-matches)

@@ -19,7 +19,8 @@ setup_test_content() {
 
     run tdo "--find" "docker"
     assert_success
-    echo "$output" | grep -q "tech/docker.md"
+    echo "$output" | grep -q "docker.md"
+    ! echo "$output" | grep -q "tech/"
 }
 
 @test "tdo find command finds nothing for non-existent term" {
@@ -121,4 +122,34 @@ EOF
     run tdo "p"
     assert_success
     assert_equal "$output" "0"
+}
+
+@test "tdo f outputs only file names and excludes journal entries" {
+    mkdir -p "$NOTES_DIR/notes/deep/path"
+    echo "some unique query" > "$NOTES_DIR/notes/deep/path/target-note.md"
+
+    mkdir -p "$JOURNAL_DIR/entries/2026/10"
+    echo "some unique query in journal" > "$JOURNAL_DIR/entries/2026/10/2026-10-24.md"
+
+    run tdo "f" "unique query"
+    assert_success
+    assert_contains "$output" "target-note.md"
+    assert_not_contains "$output" "$NOTES_DIR"
+    assert_not_contains "$output" "notes/deep"
+    assert_not_contains "$output" "2026-10-24.md"
+}
+
+@test "tdo t outputs only file names and excludes journal entries" {
+    mkdir -p "$TODOS_DIR/todos/2026/10"
+    echo "- [ ] Important todo" > "$TODOS_DIR/todos/2026/10/2026-10-24.md"
+
+    mkdir -p "$JOURNAL_DIR/entries/2026/10"
+    echo "- [ ] Journal action item" > "$JOURNAL_DIR/entries/2026/10/2026-10-24-journal.md"
+
+    run tdo "t"
+    assert_success
+    assert_contains "$output" "2026-10-24.md"
+    assert_not_contains "$output" "$TODOS_DIR"
+    assert_not_contains "$output" "todos/2026"
+    assert_not_contains "$output" "2026-10-24-journal.md"
 }
