@@ -713,7 +713,11 @@ find_or_create_note() {
 
     note_file="$root/notes/$1.md"
     template="$root/templates/note.md"
-    notes=$(find "$root" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*")
+    local search_dirs=("$root")
+    if [ -n "$TODOS_DIR" ] && [ "$TODOS_DIR" != "$NOTES_DIR" ] && [ -d "$TODOS_DIR" ]; then
+        search_dirs+=("$TODOS_DIR")
+    fi
+    notes=$(find "${search_dirs[@]}" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*")
 
     if [ -z "$notes" ]; then
         new_note "$1"
@@ -723,7 +727,7 @@ find_or_create_note() {
             if [ "$(echo "$notes" | wc -l)" -eq 1 ]; then
                 $EDITOR "$notes"
             else
-                find "$root" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*" | sort |
+                find "${search_dirs[@]}" -type f -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -iname "*$1*" | sort |
                     fzf --delimiter / --with-nth -1 \
                         --bind "enter:execute($EDITOR {})" \
                         --bind "ctrl-n:execute(cp $template $note_file && $EDITOR $note_file)" \

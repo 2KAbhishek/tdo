@@ -2,9 +2,29 @@
 
 function __tdo_note_files
     set -l notes_dir "$NOTES_DIR"
-    test -d "$NOTES_DIR/notes"; and set notes_dir "$NOTES_DIR/notes"
+    set -l exclude_todos 0
+    if test -d "$NOTES_DIR/notes"
+        set notes_dir "$NOTES_DIR/notes"
+    else
+        set exclude_todos 1
+    end
     if test -n "$notes_dir"; and test -d "$notes_dir"
-        find "$notes_dir" -type f -name '*.md' -not -path '*/.*' | sed 's|.*/||' | sort -u
+        if test $exclude_todos -eq 1
+            find "$notes_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -not -path '*/todos/*' | sed 's|.*/||' | sort -u
+        else
+            find "$notes_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u
+        end
+    end
+end
+
+function __tdo_todo_files
+    set -l todos_dir "$TODOS_DIR"
+    test -z "$todos_dir"; and set todos_dir "$NOTES_DIR"
+    test -d "$todos_dir/todos"; and set todos_dir "$todos_dir/todos"
+    set -l notes_dir "$NOTES_DIR"
+    test -d "$NOTES_DIR/notes"; and set notes_dir "$NOTES_DIR/notes"
+    if test -n "$todos_dir"; and test -d "$todos_dir"; and test "$todos_dir" != "$notes_dir"
+        find "$todos_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u
     end
 end
 
@@ -45,8 +65,9 @@ complete -c tdo -n "__fish_use_subcommand" -a "t todo" -d "Show pending todos"
 # Relative dates
 complete -c tdo -n "__fish_use_subcommand" -a "today tomorrow yesterday next-week last-week monday tuesday wednesday thursday friday saturday sunday" -d "Relative date"
 
-# Note file names
+# Note and todo file names
 complete -c tdo -n "__fish_use_subcommand" -a "(__tdo_note_files)" -d "Note file"
+complete -c tdo -n "__fish_use_subcommand" -a "(__tdo_todo_files)" -d "Todo file"
 
 # Journal entry flags and subcommands
 complete -c tdo -n "__fish_seen_subcommand_from e entry" -s f -l find -d "Search journal entries"

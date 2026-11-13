@@ -4,7 +4,7 @@
 
 if [ -n "$ZSH_VERSION" ]; then
     _tdo_zsh_completions() {
-        local -a flags subcommands dates notes
+        local -a flags subcommands dates notes todos
 
         flags=(
             '-c:Commit changes'
@@ -66,9 +66,27 @@ if [ -n "$ZSH_VERSION" ]; then
             _describe -V -t dates 'dates' dates
             if [[ -n "$NOTES_DIR" && -d "$NOTES_DIR" ]]; then
                 local notes_dir="$NOTES_DIR"
-                [[ -d "$NOTES_DIR/notes" ]] && notes_dir="$NOTES_DIR/notes"
-                notes=($(find "$notes_dir" -type f -name '*.md' -not -path '*/.*' | sed 's|.*/||' | sort -u))
+                local exclude_todos=false
+                if [[ -d "$NOTES_DIR/notes" ]]; then
+                    notes_dir="$NOTES_DIR/notes"
+                else
+                    exclude_todos=true
+                fi
+
+                if $exclude_todos; then
+                    notes=($(find "$notes_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -not -path '*/todos/*' | sed 's|.*/||' | sort -u))
+                else
+                    notes=($(find "$notes_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u))
+                fi
                 _describe -V -t notes 'notes' notes
+
+                local todos_dir="${TODOS_DIR:-$NOTES_DIR}"
+                todos_dir="${todos_dir%/}"
+                [[ -d "$todos_dir/todos" ]] && todos_dir="$todos_dir/todos"
+                if [[ -n "$todos_dir" && -d "$todos_dir" && "$todos_dir" != "$notes_dir" ]]; then
+                    todos=($(find "$todos_dir" -type f -name '*.md' -not -path '*/.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u))
+                    _describe -V -t todos 'todos' todos
+                fi
             fi
         elif (( CURRENT == 3 )) && [[ "${words[2]}" == "e" || "${words[2]}" == "entry" ]]; then
             local -a entry_flags entry_cmds entry_dates entry_files
@@ -115,7 +133,7 @@ if [ -n "$ZSH_VERSION" ]; then
         autoload -Uz compinit && compinit -C 2>/dev/null || compinit 2>/dev/null
     fi
 
-    zstyle ':completion:*:*tdo:*' group-order flags commands 'journal commands' dates entries notes
+    zstyle ':completion:*:*tdo:*' group-order flags commands 'journal commands' dates todos notes entries
     zstyle ':completion:*:*tdo:*' sort false
     zstyle ':fzf-tab:complete:tdo:*' sort false
 
@@ -134,10 +152,29 @@ elif [ -n "$BASH_VERSION" ]; then
             opts="$bash_flags $bash_cmds $bash_dates"
             if [[ -n "$NOTES_DIR" && -d "$NOTES_DIR" ]]; then
                 local notes_dir="$NOTES_DIR"
-                [[ -d "$NOTES_DIR/notes" ]] && notes_dir="$NOTES_DIR/notes"
+                local exclude_todos=false
+                if [[ -d "$NOTES_DIR/notes" ]]; then
+                    notes_dir="$NOTES_DIR/notes"
+                else
+                    exclude_todos=true
+                fi
+
                 local note_files
-                note_files=$(find "$notes_dir" -type f -name '*.md' -not -path '*/\.*' | sed 's|.*/||' | sort -u)
+                if $exclude_todos; then
+                    note_files=$(find "$notes_dir" -type f -name '*.md' -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' -not -path '*/todos/*' | sed 's|.*/||' | sort -u)
+                else
+                    note_files=$(find "$notes_dir" -type f -name '*.md' -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u)
+                fi
                 opts="$opts $note_files"
+
+                local todos_dir="${TODOS_DIR:-$NOTES_DIR}"
+                todos_dir="${todos_dir%/}"
+                [[ -d "$todos_dir/todos" ]] && todos_dir="$todos_dir/todos"
+                if [[ -n "$todos_dir" && -d "$todos_dir" && "$todos_dir" != "$notes_dir" ]]; then
+                    local todo_files
+                    todo_files=$(find "$todos_dir" -type f -name '*.md' -not -path '*/\.*' -not -path '*/templates/*' -not -path '*/entries/*' -not -path '*/journal/*' | sed 's|.*/||' | sort -u)
+                    opts="$opts $todo_files"
+                fi
             fi
             COMPREPLY=($(compgen -W "${opts}" -- "${cur}"))
         elif [[ "$COMP_CWORD" -eq 2 && ( "$prev" == "e" || "$prev" == "entry" ) ]]; then

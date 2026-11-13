@@ -94,3 +94,35 @@ load '../test_helper'
     assert_contains "$output" "-l"
     assert_contains "$output" "-m"
 }
+
+@test "bash completions include files from both notes and todos directories" {
+    mkdir -p "$NOTES_DIR/notes" "$NOTES_DIR/todos/lists"
+    touch "$NOTES_DIR/notes/my-note.md"
+    touch "$NOTES_DIR/todos/lists/my-todo.md"
+
+    # shellcheck source=/dev/null
+    source "$BATS_TEST_DIRNAME/../../completions/tdo_completion.sh"
+
+    COMP_WORDS=("tdo" "")
+    COMP_CWORD=1
+    _tdo_bash_completions
+
+    local all="${COMPREPLY[*]}"
+    assert_contains "$all" "my-note.md"
+    assert_contains "$all" "my-todo.md"
+}
+
+@test "fish completions include files from both notes and todos directories" {
+    if ! command -v fish >/dev/null 2>&1; then
+        skip "fish shell not installed"
+    fi
+
+    mkdir -p "$NOTES_DIR/notes" "$NOTES_DIR/todos/lists"
+    touch "$NOTES_DIR/notes/fish-note.md"
+    touch "$NOTES_DIR/todos/lists/fish-todo.md"
+
+    run fish -c "set -x NOTES_DIR '$NOTES_DIR'; source completions/tdo_completion.fish; complete -C'tdo '"
+    assert_success
+    assert_contains "$output" "fish-note.md"
+    assert_contains "$output" "fish-todo.md"
+}
